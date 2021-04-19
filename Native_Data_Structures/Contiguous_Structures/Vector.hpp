@@ -239,7 +239,11 @@ public:
 		in.sync();//i.e. clears remaining content from buffer
 		for(T temp;vec._size<vec._capacity;++vec._size){
 			in>>temp;
+		#if __cplusplus >= 201103L
+			new(vec.data+sizeof(T)*vec._size) T(move(temp));
+		#else
 			new(vec.data+sizeof(T)*vec._size) T(temp);
+		#endif
 		}
 		return in;
 	}
