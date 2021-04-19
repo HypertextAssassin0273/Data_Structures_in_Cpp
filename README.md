@@ -1,2 +1,2 @@
 # Data Structures in C++
-Contains some useful C++ Programs, developed through DevC++ during my 3rd semester at University.
+Contains some useful Data Structures Programs & Algorithms, developed through DevC++ during my 3rd semester at University.
