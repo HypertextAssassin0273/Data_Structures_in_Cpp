@@ -320,28 +320,7 @@ public:
 		}while(temp!=tail);
 		cout<<endl;
 	}
-	void clear(){
-		if(!tail)
-			return;
-		if(tail->next==tail)
-			delete tail;
-		else{
-			node* temp,*head=tail->next;
-			tail->next=nullptr;//i.e. converting into non-circular by breaking link
-			while(head){
-	   			temp=head->next;
-	    		delete head;
-    			head=temp;
-			}
-		}
-		tail=nullptr;
-	}
-	
-	/* Operations (two list based)*/
-	void swap(DCLL<T> &other){
-		std::swap(*this,other);
-	}
-	void merge(DCLL<T> &other,__int64 pos=0){
+	void merge(DCLL &other,__int64 pos=0){
 		if(!other.tail||pos<0||pos>_size)
 			return;//i.e. do nothing if 'other' have no nodes or size exceeds the given pos
 		node *temp;
@@ -363,6 +342,22 @@ public:
 		_size+=other._size;
 		other.tail=nullptr;
 		other._size=0;
+	}
+	void clear(){
+		if(!tail)
+			return;
+		if(tail->next==tail)
+			delete tail;
+		else{
+			node* temp,*head=tail->next;
+			tail->next=nullptr;//i.e. converting into non-circular by breaking link
+			while(head){
+	   			temp=head->next;
+	    		delete head;
+    			head=temp;
+			}
+		}
+		tail=nullptr;
 	}
 	
 	~DCLL(){ clear(); }//i.e. dtor
