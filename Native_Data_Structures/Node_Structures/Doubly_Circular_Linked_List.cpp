@@ -99,8 +99,8 @@ public:
 		return it->data;
 	}
 	T& front()const{
-		if (head)
-			return head->data;
+		if (tail)
+			return tail->next->data;
 		throw false;
 	}
 	T& back()const{
