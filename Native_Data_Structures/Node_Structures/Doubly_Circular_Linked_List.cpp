@@ -7,7 +7,7 @@ using namespace std;
 #endif
 
 template<typename T>
-class DCLL{//i.e. Doubly Linked-List (same as STL::list)
+class DCLL{//i.e. Doubly Circular Linked-List
     typedef unsigned long long __uint64;
 	typedef unsigned int __uint32;
 	
