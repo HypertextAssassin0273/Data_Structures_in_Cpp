@@ -150,10 +150,17 @@ private:
 		data=new_data;
 	}
 public:
-    void push_back(const T& val){
-    	if(_size>=_capacity)
+#if __cplusplus >= 201103L
+	void push_back(T&& val){
+		if(_size>=_capacity)
 			reallocate(_capacity?_capacity*=2:++_capacity);
 			//i.e. if capacity is '0' then set it to '1' else twice it
+    	new(data+sizeof(T)*_size++) T(move(val));
+	}
+#endif
+	void push_back(const T& val){
+    	if(_size>=_capacity)
+			reallocate(_capacity?_capacity*=2:++_capacity);
     	new(data+sizeof(T)*_size++) T(val);
 	}
 #if __cplusplus >= 201103L
