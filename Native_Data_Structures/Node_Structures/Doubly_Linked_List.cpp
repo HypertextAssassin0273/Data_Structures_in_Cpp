@@ -1,8 +1,11 @@
 #include<iostream>
 using namespace std;
 
+#ifndef DLL_GUARD
+#define DLL_GUARD 1
+
 #if __cplusplus < 201103L
-	const short nullptr=0L;
+#define nullptr 0L
 #define noexcept
 #endif
 
@@ -56,8 +59,18 @@ class DLL{//i.e. Doubly Linked-List (same as STL::list)
 				release();
 		}//i.e. useful when a list is destroyed & its' nodes needs to transfer to garbage collector at O(1) complexity
 	#if __cplusplus >= 201103L
+		node* pop(T&& new_data){//i.e. complexity O(1)
+			if(!ptr)
+    	   		return nullptr;
+	    	node *popped=ptr;
+    		ptr=ptr->next;
+    		--_size;
+    		popped->data=move(new_data);
+    		popped->next=popped->prev=nullptr;
+    		return popped;
+		}
 		template<typename... _T>
-		node* pop(_T&&... new_data){//i.e. complexity O(1)
+		node* pop(_T&&... new_data){
 	#else
 		node* pop(const T& new_data){
     #endif
@@ -157,6 +170,7 @@ public:
 
 	/* Accessors & Mutators */
 #if __cplusplus >= 201103L
+	node* new_node(T&& new_data)const{ return GC.ptr?GC.pop(move(new_data)):new node(move(new_data)); }
 	template<typename... _T>
 	node* new_node(_T&&... new_data)const{ return GC.ptr?GC.pop(new_data...):new node(new_data...); }
 #else
@@ -188,6 +202,9 @@ public:
     /*i.e. Modifiers */
     bool empty()const{ return head?false:true; }
 #if __cplusplus >= 201103L
+	void push_front(T&& new_data){//i.e. move_front
+		push_front(GC.ptr?GC.pop(move(new_data)):new node(move(new_data)));
+	}
 	template<typename... _T>
 	void push_front(_T&&... new_data){//i.e. emplace_front
 		push_front(GC.ptr?GC.pop(new_data...):new node(new_data...));//i.e. direct initialization is possible
@@ -206,6 +223,9 @@ public:
 		++_size;
     }
 #if __cplusplus >= 201103L
+	void push_back(T&& new_data){//i.e. move_back
+		push_back(GC.ptr?GC.pop(move(new_data)):new node(move(new_data)));
+	}
 	template<typename... _T>
 	void push_back(_T&&... new_data){//i.e. emplace_back
 		push_back(GC.ptr?GC.pop(new_data...):new node(new_data...));
@@ -275,6 +295,9 @@ public:
     	return popped;
     }
 #if __cplusplus >= 201103L
+	void push_middle(T&& new_data){//i.e. move_middle
+		push_middle(GC.ptr?GC.pop(move(new_data)):new node(move(new_data)));
+	}
 	template<typename... _T>
 	void push_middle(_T&&... new_data){//i.e. emplace_middle
 		push_middle(GC.ptr?GC.pop(new_data...):new node(new_data...));
@@ -335,6 +358,9 @@ public:
     	return popped;
 	}
 #if __cplusplus >= 201103L
+	void insert(__int64 index,T&& new_data){
+		insert(index,GC.ptr?GC.pop(move(new_data)):new node(move(new_data)));
+	}
 	template<typename... _T>
 	void insert(__int64 index,_T&&... new_data){//i.e. emplace_randomly
 		insert(index,GC.ptr?GC.pop(new_data...):new node(new_data...));
@@ -476,6 +502,11 @@ private: /*i.e. Hidden methods */
     	new_node->prev=temp;
 	}
 public:
+#if __cplusplus >= 201103L
+	void sorted_insert(T&& new_data,bool direction_flag=true){
+		sorted_insert(GC.ptr?GC.pop(move(new_data)):new node(move(new_data)),direction_flag);
+	}
+#endif
 	void sorted_insert(const T& new_data,bool direction_flag=true){
 		sorted_insert(GC.ptr?GC.pop(new_data):new node(new_data),direction_flag);
 	}
@@ -626,12 +657,12 @@ public:
 #endif
 	
 	/* Overloaded 'cin/cout' Methods */
-	friend ostream& operator<<(ostream& out,const DLL& list){
+	friend ostream& operator<<(ostream& out,const DLL& list){//i.e. same as traverse_forward
 		for(node *it=list.head;it;it=it->next)
     		out<<*it<<" ";
 		return out;
 	}
-	friend istream& operator>>(istream& in,DLL& list){
+	friend istream& operator>>(istream& in,DLL& list){//Note: works best for updating values
 		for(node *it=list.head;it;it=it->next)
     		in>>*it;
 		return in;
@@ -649,6 +680,8 @@ typename DLL<T>::garbage_collector DLL<T>::GC;
 #if __cplusplus >= 201103L
 template<typename T>
 using List=DLL<T>;//i.e. using 'alias template' to rename DLL<T> as List<T>
+#endif
+
 #endif
 
 
