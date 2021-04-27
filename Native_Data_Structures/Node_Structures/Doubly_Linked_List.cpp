@@ -9,8 +9,15 @@ using namespace std;
 #define noexcept
 #endif
 
+/* Doubly Linked-List (same as STL::list) */
+/*  Highlights:
+	1) Main emphasis on 'rule of five' (move semantics applicable with C++11 settings)
+	2) Concept of Garbage Collector is also implemented to improve efficiency of program in some specific cases
+	3) Safe when accessing elements with accessors (Exception somewhat handled)
+	4) All neccessary STL List class 'modifiers' & 'iterators' are provided
+*/
 template<typename T>
-class DLL{//i.e. Doubly Linked-List (same as STL::list)
+class DLL{
     typedef unsigned long long __uint64;
 	typedef unsigned int __uint32;
 	
