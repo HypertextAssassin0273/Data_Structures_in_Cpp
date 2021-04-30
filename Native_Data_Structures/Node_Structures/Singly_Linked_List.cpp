@@ -2,7 +2,7 @@
 using namespace std;
 
 #if __cplusplus < 201103L
-	const short nullptr=0L;
+#define nullptr 0L
 #define noexcept
 #endif
 
@@ -402,7 +402,7 @@ public:
 	//TODO:
 	//void remove_all_duplicates();
     
-//	bool detect_loop(){//i.e. Floyd’s Cycle Algorithm (extra)
+//	bool detect_loop(){//i.e. FloydÂ’s Cycle Algorithm (extra)
 // 	   	node *slow_ptr=head,*fast_ptr=head;
 //    	while (slow_ptr&&fast_ptr&&fast_ptr->next){
 //    	    slow_ptr=slow_ptr->next;
