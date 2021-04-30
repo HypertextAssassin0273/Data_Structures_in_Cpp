@@ -15,7 +15,7 @@ class DCLL{//i.e. Doubly Circular Linked-List
 	    T data;
     	node *next,*prev;
     	
-    #if __cplusplus >= 201103L
+    #if __cplusplus < 201103L
     	node(const T& data=T())noexcept://i.e. default ctor
 			data(data),next(nullptr),prev(nullptr){}
     #else
@@ -362,14 +362,16 @@ public:
 	
 	~DCLL(){ clear(); }//i.e. dtor
 };
+
 int main(){
 #if __cplusplus >= 201103L
 	DCLL<int> list{1,2,3,4,5},list2{44,55,66};
 #else
-	DCLL<int> list;
+	DCLL<int> list,list2;
 	for(int i=1;i<=5;++i)
 		list.push_back(i);
-		
+	for(int i=44;i<=66;i+=11)
+		list2.push_back(i);
 #endif
 //	for(int i=1;i<=5;++i)
 //		list.push_front(i);
@@ -390,7 +392,7 @@ int main(){
 //	list.insert(3,404);
 //	list.erase(3);
 	
-	list.merge(list2,-1);
+	list.merge(list2,1);
 	
 	list.traverse_forward();
 	list.traverse_backward();
