@@ -2,7 +2,7 @@
 using namespace std;
 
 #if __cplusplus < 201103L
-	const short nullptr=0L;
+#define nullptr 0L
 #define noexcept
 #endif
 
