@@ -189,7 +189,7 @@ public:
 			throw false;
 		}
 		if(n==_size-1)
-			return tail->data;//i.e. same as back()
+			return tail->data;
 		node* it=head;
 		for(__uint32 i=0;i<n;++i,it=it->next);
 		return it->data;
@@ -620,6 +620,31 @@ public:
 		}
 		_size=0;
 	}
+	
+	/* Comparison Operators */
+	bool operator==(const DLL& other)const{
+		if(other._size<_size)
+			return false;
+		for (node *i=head,*j=other.head;i;i=i->next,j=j->next)
+    		if (i->data!=j->data)
+      			return false;
+  		return true;
+	}
+	bool operator!=(const DLL& other)const{ return !(*this==other); }
+	
+	bool operator<(const DLL& other)const{
+  		node *i=head,*j=other.head;
+  		for (;i;i=i->next,j=j->next){
+  			if(i==other.tail||j->data<i->data)
+  				return false;
+  			else if(i->data<j->data)
+  				return true;
+		}
+		return i!=other.tail;
+	}
+    bool operator>(const DLL& other)const{ return other<*this; }
+	bool operator<=(const DLL& other)const{ return !(other<*this); }
+	bool operator>=(const DLL& other)const{ return !(*this<other); }
 
  	/* Iterators */
 	template<bool flag>//i.e. true-> forward_iterator, false->reverse_iterator
@@ -741,6 +766,17 @@ void test_case_1(){
 }
 
 void test_case_2(){
+	DLL<char> s1={'2','0','1','6'},s2={'2','0','2','0'};
+
+	cout<<"\nEquals to: "<<std::boolalpha<<(s1==s2)<<endl
+		<<"Not equals to: "<<(s1!=s2)<<endl
+		<<"Greater than: "<<(s1>s2)<<endl
+		<<"Less than: "<<(s1<s2)<<endl
+		<<"Greater than & equals to: "<<(s1>=s2)<<endl
+		<<"Less than & equals to: "<<(s1<=s2)<<endl;
+}
+
+void test_case_3(){
 	cout<<"\ntest_case_2:"<<endl;
 	DLL<int> mylist;
 	
@@ -762,7 +798,7 @@ void test_case_2(){
 }
 
 #if __cplusplus >= 201103L
-void test_case_3(){
+void test_case_4(){
 	cout<<"\ntest_case_3:"<<endl;
 	List<List<int>> obj{{1,2,3,4,5},{6,7,8,9,10}},obj2;
 	
@@ -795,7 +831,7 @@ void test_case_3(){
 }
 #endif
 
-void test_case_4(){//i.e. C.R.U.D Operations on Queue
+void test_case_5(){//i.e. C.R.U.D Operations on Queue
 	DLL<int> list;
 	short choice;
 	while (true){
@@ -844,8 +880,9 @@ void test_case_4(){//i.e. C.R.U.D Operations on Queue
 
 int main(){
 //	test_case_1();//use of all operations
-//	test_case_2();//use of resize modifier
-//	test_case_3();//nested 2D DLL testing (C++11)
-	test_case_4();//using DLL as queue with FIFO order (best-case)
+//	test_case_2();//use of comparison operators
+//	test_case_3();//use of resize modifier
+//	test_case_4();//nested 2D DLL testing (C++11)
+	test_case_5();//using DLL/List as queue with FIFO order (best-case)
 	return 0;
 }
