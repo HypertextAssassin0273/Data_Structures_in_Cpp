@@ -232,7 +232,9 @@ public:
 		return i!=other._size;
 	}
     bool operator>(const Vector& other)const{ return other<*this; }
-
+	bool operator<=(const Vector& other)const{ return !(other<*this); }
+	bool operator>=(const Vector& other)const{ return !(*this<other); }
+	
  	/*i.e. Iterators */
  	typedef Iterator<T> iterator;
  	typedef Reverse_Iterator<T> r_iterator;
