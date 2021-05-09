@@ -67,24 +67,24 @@ public:
 	void clear(){ clear(root); root=nullptr; _size=0; }
 	
 	void convert_BST_to_max_heap()const{
-    	List<T> queue;
-    	in_order_transfer_to_queue(root,queue);
-    	post_order_transfer_to_BST(root,queue);
+		List<T> queue;
+		in_order_transfer_to_queue(root,queue);
+		post_order_transfer_to_BST(root,queue);
 	}
 	void convert_BST_to_min_heap()const{
-    	List<T> queue;
-    	in_order_transfer_to_queue(root,queue);
-    	pre_order_transfer_to_BST(root,queue);
+		List<T> queue;
+		in_order_transfer_to_queue(root,queue);
+		pre_order_transfer_to_BST(root,queue);
 	}
 	void convert_min_heap_to_max_heap()const{
-    	List<T> queue;
-    	pre_order_transfer_to_queue(root,queue);
-    	post_order_transfer_to_BST(root,queue);
+		List<T> queue;
+		pre_order_transfer_to_queue(root,queue);
+		post_order_transfer_to_BST(root,queue);
 	}
 	void convert_max_heap_to_min_heap()const{
-    	List<T> queue;
-    	post_order_transfer_to_queue(root,queue);
-    	pre_order_transfer_to_BST(root,queue);
+		List<T> queue;
+		post_order_transfer_to_queue(root,queue);
+		pre_order_transfer_to_BST(root,queue);
 	}
 	
 	~BST(){ clear(root); root=nullptr; }
