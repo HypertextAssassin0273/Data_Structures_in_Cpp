@@ -159,20 +159,20 @@ private:
 		return current;
 	}
 	bool search(node* current,const T& key){
-        if(!current)
-            return false;
+		if(!current)
+			return false;
         if(key<current->key)
-        	return search(current->left,key);
-        if(key>current->key)
-            return search(current->right,key);
-        return true;
-    }
-    void clear(node* current){
-        if(!current)
-            return;
-        clear(current->left);
-        clear(current->right);
-        delete current;
+			return search(current->left,key);
+		if(key>current->key)
+			return search(current->right,key);
+		return true;
+	}
+	void clear(node* current){
+		if(!current)
+			return;
+		clear(current->left);
+		clear(current->right);
+		delete current;
 	}
 	
 	void pre_order_transfer_to_queue(node *current,List<T>& queue)const{
