@@ -207,9 +207,9 @@ public:
 		throw false;
 	}
 	__uint32 size()const{ return _size; }
+	bool empty()const{ return head?false:true; }
 	
     /*i.e. Modifiers */
-    bool empty()const{ return head?false:true; }
 #if __cplusplus >= 201103L
 	void push_front(T&& new_data){//i.e. move_front
 		push_front(GC.ptr?GC.pop(move(new_data)):new node(move(new_data)));
