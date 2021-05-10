@@ -1,5 +1,3 @@
-#include<algorithm>
-
 #if __cplusplus >= 201103L
 template<typename T>//i.e. T->type
 void Swap(T &xp,T &yp){
@@ -17,6 +15,17 @@ void Swap(T &xp,T &yp){
 }
 #endif
 
+template<class Iterator>
+Iterator Min_element(Iterator first,const Iterator& last){
+	if (first==last)
+		return last;
+  	Iterator smallest=first;
+  	while (++first!=last)
+    	if (*first<*smallest)
+      		smallest=first;
+  	return smallest;
+}
+
 namespace Sort{
 	template<class Iterator>
 	void Bubble(const Iterator& begin,const Iterator& end){
@@ -28,7 +37,7 @@ namespace Sort{
 	
 	template<class Iterator>
 	void Insertion(Iterator begin,const Iterator& end){
-	    std::iter_swap(begin,std::min_element(begin,end));//i.e. here, 'begin' acts as 'min' value
+	    Swap(*begin,*Min_element(begin,end));//i.e. here, 'begin' acts as 'min' value
 	    for (Iterator b=begin;++b<end;begin=b)
 	        for (Iterator c=b;*c<*begin;--c,--begin)
 	            Swap(*begin,*c);
@@ -37,7 +46,7 @@ namespace Sort{
 	template<class Iterator>
 	void Selection(const Iterator& begin,const Iterator& end){
 	    for (Iterator i=begin;i!=end;++i)
-	        std::iter_swap(i,std::min_element(i,end));//i.e. here, 'i' acts as 'min' value
+	        Swap(*i,*Min_element(i,end));//i.e. here, 'i' acts as 'min' value
 	}
 	
 	template<class Iterator>
