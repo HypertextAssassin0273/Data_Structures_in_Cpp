@@ -129,9 +129,9 @@ public:
 	}
 	__uint32 size()const{ return _size; }
  	__uint32 capacity()const{ return _capacity; }
+	bool empty()const{ return _size?false:true; }
 	
 	/*i.e. Modifiers */
-	bool empty()const{ return _size?false:true; }
 private:
 	void reallocate(__uint64 n){
 		__uchar* new_data=new __uchar[sizeof(T)*n];
