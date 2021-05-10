@@ -35,7 +35,8 @@ public:
 		root(nullptr),_size(0){}
 #if __cplusplus >= 201103L
 	//i.e.initializer_list based ctor
-	BST(initializer_list<T> list)noexcept:root(nullptr),_size(0){
+	BST(initializer_list<T> list)noexcept:
+		root(nullptr),_size(0){
 		for(const auto& it:list)//i.e. traversing list through iterator
         	insert(it);
 	}
