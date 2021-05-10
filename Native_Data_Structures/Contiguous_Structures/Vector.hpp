@@ -1,8 +1,3 @@
-#ifndef _GLIBCXX_IOSTREAM 
-#include<iostream>
-using namespace std;
-#endif
-
 /* Custom Vector Class (minimal STL Vector) */
 /*  Highlights:
 	1) Main emphasis on 'rule of five' (move semantics applicable with C++11 settings)
@@ -13,6 +8,11 @@ using namespace std;
 */
 #ifndef VECTOR_GUARD
 #define VECTOR_GUARD 1
+
+#ifndef _GLIBCXX_IOSTREAM 
+#include<iostream>
+using namespace std;
+#endif
 
 #if !ITERATOR_GUARD
 #include"Iterator.hpp"
@@ -257,20 +257,20 @@ public:
 #endif
 	
 	/* Overloaded 'cin/cout' Methods */
-	friend ostream& operator<<(ostream& out,const Vector& vec){
-		for(unsigned int i=0;i<vec._size;++i)
-			out<<*(T*)(vec.data+sizeof(T)*i)<<" ";
+	friend ostream& operator<<(ostream& out,const Vector& self){
+		for(unsigned int i=0;i<self._size;++i)
+			out<<*(T*)(self.data+sizeof(T)*i)<<" ";
 		return out;
 	}
-	friend istream& operator>>(istream& in,Vector& vec){
-		vec.clear();
+	friend istream& operator>>(istream& in,Vector& self){
+		self.clear();
 		in.sync();//i.e. clears remaining content from buffer
-		for(T temp;vec._size<vec._capacity;++vec._size){
+		for(T temp;self._size<self._capacity;++self._size){
 			in>>temp;
 		#if __cplusplus >= 201103L
-			new(vec.data+sizeof(T)*vec._size) T(move(temp));
+			new(self.data+sizeof(T)*self._size) T(move(temp));
 		#else
-			new(vec.data+sizeof(T)*vec._size) T(temp);
+			new(self.data+sizeof(T)*self._size) T(temp);
 		#endif
 		}
 		return in;
