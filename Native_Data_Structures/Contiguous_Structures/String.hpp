@@ -1,12 +1,16 @@
+/* Custom String Class (minimal std::string) */
+
+#ifndef STRING_GUARD
+#define STRING_GUARD 1
+
 #ifndef _GLIBCXX_IOSTREAM 
 #include<iostream>
 using namespace std;
 #endif
 
-/* Custom String Class (minimal std::string) */
-
-#ifndef STRING_GUARD
-#define STRING_GUARD 1
+#if !_GLIBCXX_FSTREAM
+#include<fstream>
+#endif
 
 #if !ITERATOR_GUARD
 #include"Iterator.hpp"
@@ -129,11 +133,12 @@ public:
 			return data[_size-1];
 		throw false;
 	}
+	const char* c_str()const{ return data; }//Note: use it with '\0'
 	__uint32 size()const{ return _size; }
  	__uint32 capacity()const{ return _capacity; }
+	bool empty()const{ return _size?false:true; }
 	
 	/*i.e. Modifiers */
-	bool empty()const{ return _size?false:true; }
 private:
 	void reallocate(__uint64 n){
 		char* new_data=new char[n];
@@ -257,14 +262,25 @@ public:
 #endif
 	
 	/* Overloaded 'cin/cout' Methods */
-	friend ostream& operator<<(ostream& out,const Vector& vec){
-		for(__uint32 i=0;i<vec._size;++i)
-			out<<vec.data[i];
+	friend ostream& operator<<(ostream& out,const Vector& self){
+		for(__uint32 i=0;i<self._size;++i)
+			out<<self.data[i];
 		return out;
 	}
-	friend istream& operator>>(istream& in,Vector& vec){
-		vec._size=0;
-		for(char temp;(temp=getchar())!=10;vec.push_back(temp));
+	friend istream& operator>>(istream& in,Vector& self){
+		self._size=0;
+		for(char reader;(reader=getchar())!=10;self.push_back(reader));
+		return in;
+	}
+	
+	/* Overloaded 'fin/fout' Methods */
+	friend ofstream& operator<<(ofstream& out,const Vector& self){
+		for(__uint32 i=0;i<self._size;++i)
+			out<<self.data[i];
+		return out;
+	}
+	friend ifstream& operator>>(ifstream& in,Vector& self){
+		for(char reader='\0';(reader=in.get())!='\n';self.push_back(reader));
 		return in;
 	}
 	
