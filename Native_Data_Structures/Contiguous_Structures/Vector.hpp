@@ -47,7 +47,7 @@ public:
 	Vector(__uint64 n,_T&&... val)noexcept://i.e. emplaced ctor for initializing whole vector with given value
 		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){
 		while(_size<_capacity)
-			new(data+sizeof(T)*_size++) T(val...);
+			new(data+sizeof(T)*_size++) T(std::forward<_T>(val)...);//i.e. perfect forwarding
 	}
 #else
 	Vector(__uint64 n,const T& val)noexcept:
@@ -115,7 +115,7 @@ public:
 	 		throw false;
 		}
 		return (T*)(data+sizeof(T)*n);
-		//Note: use with '*' operator to access elements of 'data' buffer, i.e. cout<<*(vec+2);
+		//Note: use this operator with '*' operator to access elements of 'data' buffer, i.e. cout<<*(vec+2);
 	}
 	T& front()const{
 		if (_size)
@@ -135,17 +135,24 @@ public:
 private:
 	void reallocate(__uint64 n){
 		__uchar* new_data=new __uchar[sizeof(T)*n];
+	
 		for(__uint64 i=0;i<(sizeof(T)*_size);++i)
-			new_data[i]=data[i];//i.e. copying buffer (byte by byte)
-		/*Note: 
-			->this saves us from extra constructions & destructions
-			->also copies ptr addresses, so no loss for non-P.O.D mapped objs */
+			new_data[i]=data[i];//i.e. copying data-buffer (byte by byte)
+		/*Note: this method behaves same as 'move constructing resources' in both C++ versions,
+			but may fail for storing a significant amount of large-size type objs */
 		
-		/*Alternate for copying objs (slower process): */
-//		for(__uint64 i=0;i<_size;++i)//i.e. constructing & copying resource from 'other'
-//				new(new_data+sizeof(T)*i) T(*(T*)(data+sizeof(T)*i));
-//		for(__uint64 i=0;i<_size;++i)//i.e. destroying previously stored objs from 'data' buffer
+		/*Alternate for transferring resources: */
+//	#if __cplusplus >= 201103L
+//		for(__uint64 i=0;i<_size;++i)//i.e. move constructing resources from 'other'
+//			new(new_data+sizeof(T)*i) T(std::move(*(T*)(data+sizeof(T)*i)));
+//			//Note: move() is used to convert lvalues to rvalues
+//	#else
+//		for(__uint64 i=0;i<_size;++i)//i.e. copy constructing resource from 'other'
+//			new(new_data+sizeof(T)*i) T(*(T*)(data+sizeof(T)*i));
+//		for(__uint64 i=0;i<_size;++i)//i.e. destroying previously stored resources from data-buffer
 //			((T*)(data+sizeof(T)*i))->~T();
+//	#endif
+		
 		delete[] data;
 		data=new_data;
 	}
@@ -155,7 +162,7 @@ public:
 		if(_size>=_capacity)
 			reallocate(_capacity?_capacity*=2:++_capacity);
 			//i.e. if capacity is '0' then set it to '1' else twice it
-    	new(data+sizeof(T)*_size++) T(move(val));
+    	new(data+sizeof(T)*_size++) T(forward<T>(val));
 	}
 #endif
 	void push_back(const T& val){
@@ -168,7 +175,7 @@ public:
 	void emplace_back(_T&&... val){//i.e. more efficient (as direct obj initialization is possible)
     	if(_size>=_capacity)
     		reallocate(_capacity?_capacity*=2:++_capacity);
-    	new(data+sizeof(T)*_size++) T(std::forward<_T>(val)...);
+    	new(data+sizeof(T)*_size++) T(forward<_T>(val)...);
 	}
 #endif
 	void pop_back(){
@@ -197,7 +204,7 @@ public:
 		if(n>_size&&reserve(n))
 	    	while(_size<_capacity)
 	    	#if __cplusplus >= 201103L
-    			new(data+sizeof(T)*_size++) T(val...);
+    			new(data+sizeof(T)*_size++) T(forward<_T>(val)...);
     		#else
     			new(data+sizeof(T)*_size++) T(val);
     		#endif
