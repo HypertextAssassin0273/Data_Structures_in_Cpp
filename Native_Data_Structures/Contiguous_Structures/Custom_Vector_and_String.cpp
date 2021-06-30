@@ -408,10 +408,11 @@ test_case_6(){
 class Fun{//i.e. for test-case 6
 	char c;
 	int i;
-	String s;
+	_string s;
 public:
-	Fun(char c='\0',int i=0,const String& s={}):c(c),i(i),s(s){}
-
+	Fun(char c,int i,_string& s):c(c),i(i),s(s){}
+	Fun(char c='\0',int i=0,_string&& s=_string()):c(c),i(i),s(move(s)){}
+	
 	friend ostream& operator<<(ostream& out,const Fun& obj){
 		out<<obj.c<<", "<<obj.i<<", "<<obj.s<<endl;
 		return out;
@@ -430,6 +431,7 @@ test_case_7(){
 		counted<Fun> obj('1',22,"333");
 		vec.emplace_back(obj);//i.e. here, works same as push_back (passing const reference)
 		vec.emplace_back(counted<Fun>('2',33,"444"));//i.e. pasing temporary (rvalue) obj of 'Fun' type
+		vec.emplace_back('2',33,"444");
 		vec.emplace_back('3',44,"555");//i.e. direct initialization (same as initializing any obj)
 		{
 			counted<Fun> temp_obj('4',55,"666");
@@ -455,7 +457,7 @@ void test_case_8(){
 		//i.e. no need to initialize string & its vector type as their default ctor gets invoked automatically
 		
 		/*i.e. ctor for direct assigning objs with values to Vector*/
-		Students(unsigned long ID,short Batch,short EGY,_string Discp,std::initializer_list<_string> list):
+		Students(unsigned long ID,short Batch,short EGY,_string Discp,const std::initializer_list<_string>& list):
 			ID(ID),Batch(Batch),Expected_Graduation_Year(EGY),Discipline(Discp),Current_Courses(list){}
 		
 		void Set_Data(){
@@ -540,7 +542,7 @@ void test_case_8(){
 	3) demonstration of copy assingment & construction in nested Vector while safely using/storing
 	   same objs inside Vector
 	4) using Vector as container for local abstract objs of Items class by utilizing the concept
-	   of polymorphism (i.e. not ideal, use handler-class specially dedicated for ptr-types)
+	   of polymorphism (i.e. not ideal, use handler-class specially dedicated for pointer-types)
 	5) using sorting algorithms with different formats of iterators
 	6) direct initialization of 3d jagged vector & understanding move-semantics, while utilizing
 	   instance_counter to keep track of vector's constructions & destructions
@@ -549,12 +551,12 @@ void test_case_8(){
 */
 
 int main(){
-//	test_case_1();
+	test_case_1();
 //	test_case_2();
 //	test_case_3();
 //	test_case_4();
-	test_case_5();
-//	/*Note: Enable C++11 in order to see the working of following test-cases */
+//	test_case_5();
+	/*Note: Enable C++11 in order to see the working of following test-cases */
 //	test_case_6();
 //	test_case_7();
 //	test_case_8();
