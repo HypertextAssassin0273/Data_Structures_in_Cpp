@@ -33,69 +33,62 @@ class Vector<char>{
 	__uint32 _size,_capacity;
 	char *data;
 public:
-	Vector(__uint64 n=0)noexcept:
+	Vector(const __uint64& n=0)://i.e. default ctor
 		_size((n>max_capacity)?throw:n),_capacity(_size),data(new char[_size]()){}
-	Vector(__uint64 n,const char& val)noexcept:
-		_size((n>max_capacity)?throw:n),_capacity(_size),data(new char[_size]){
-		for(__uint64 i=0;i<_size;++i)
-			data[i]=val;
+	Vector(const __uint64& n,const char& val)://i.e. fill ctor
+		_size(0),_capacity((n>max_capacity)?throw:n),data(new char[_capacity]){
+		while(_size<_capacity)
+			data[_size++]=val;
 	}
 	template<__uint64 n>
-	Vector(const char (&str)[n])noexcept://i.e. ctor for taking const char* type string
-		_size((n>max_capacity)?throw:n-1),_capacity(_size),data(new char[_size]){
-	 	for(__uint64 i=0;i<_size;++i)
-			data[i]=str[i];
-	}
-	Vector(char* str)noexcept:
-		_size(0),_capacity(0),data(nullptr){
-	 	for(;str[_capacity]!='\0';_capacity++);
-		data=new char[_capacity];
-		while(_size<_capacity)
+	Vector(const char (&str)[n])://i.e. copy ctor for taking const char* type string
+		_size(0),_capacity((n>max_capacity)?throw:n-1),data(new char[_capacity]){
+	 	while(_size<_capacity)
 			data[_size]=str[_size++];
 	}
-	Vector(const string& str)noexcept:
-		_size((str.size()>max_capacity)?throw:str.size()),_capacity(_size),data(new char[_size]){
-	 	for(__uint64 i=0;i<_size;++i)
-			data[i]=str[i];
+	template<__uint64 n>
+	Vector& operator=(const char (&str)[n]){//i.e. copy assignment for const char* type
+		if(n<=max_capacity){
+			delete[] data;
+			data=new char[_capacity=n-1];//i.e. neglecting null of str
+		 	for(_size=0;_size<_capacity;++_size)
+				data[_size]=str[_size];
+		}
+		return *this;
 	}
-#if __cplusplus >= 201103L
-	Vector(const std::initializer_list<char>& list)noexcept:
-		_size(0),_capacity(list.size()),data(new char[_capacity]){
-		for(const auto& it:list)
-			data[_size++]=it;
+	Vector(const string& str)noexcept://i.e. copy ctor for taking std::string type
+		_size(0),_capacity(str.capacity()),data(new char[_capacity]){
+	 	while(_size<str.size())
+			data[_size]=str[_size++];
 	}
-#endif
-	Vector(const Vector& other)noexcept:
-		_size(other._size),_capacity(other._capacity),data(new char[_capacity]()){
- 		for(__uint64 i=0;i<_size;++i)
-			data[i]=other.data[i];
+	Vector& operator=(const string& str){//i.e. copy assignment for std::string type
+		delete[] data;
+		data=new char[_capacity=str.capacity()];
+		while(_size<str.size())
+			data[_size]=str[_size++];
+		return *this;
 	}
-	Vector& operator=(const Vector& other)noexcept{
+	Vector(const Vector& other)noexcept://i.e. copy ctor
+		_size(0),_capacity(other._capacity),data(new char[_capacity]()){
+ 		while(_size<other.size())
+			data[_size]=other.data[_size++];
+	}
+	Vector& operator=(const Vector& other)noexcept{//i.e. copy assignment
 		if(this==&other)
 			return *this;
   		delete[] data;
-  		data=new char[other._capacity];
- 		for(__uint64 i=0;i<_size;++i)
-			data[i]=other.data[i];
- 		_size=other._size;
- 		_capacity=other._capacity;
+  		data=new char[_capacity=other._capacity];
+ 		for(_size=0;_size<other.size();++_size)
+			data[_size]=other.data[_size];
 	 	return *this;
  	}
- 	template<__uint64 n>
-	Vector& operator=(const char (&str)[n])noexcept{//i.e. copy assignment for string
-		delete[] data;
-		data=new char[_capacity=_size=n-1];
-	 	for(__uint64 i=0;i<_size;++i)
-			data[i]=str[i];
-		return *this;
-	}
 #if __cplusplus >= 201103L
- 	Vector(Vector&& other)noexcept:
+ 	Vector(Vector&& other)noexcept://i.e. move ctor
   		data(other.data),_size(other._size),_capacity(other._capacity){
 		other.data=nullptr;
   		other._size=other._capacity=0;
 	}
-	Vector& operator=(Vector&& other)noexcept{
+	Vector& operator=(Vector&& other)noexcept{//i.e. move assignment
   		if(this==&other)
 			return *this;
   		delete[] data;
@@ -105,6 +98,11 @@ public:
   		other.data=nullptr;
   		other._size=other._capacity=0;
   		return *this;
+	}
+	Vector(const std::initializer_list<char>& list)noexcept://i.e. brace initializer-list ctor
+		_size(0),_capacity(list.size()),data(new char[_capacity]){
+		for(const auto& it:list)
+			data[_size++]=it;
 	}
 #endif
 	
@@ -205,8 +203,8 @@ public:
 			reallocate(_size+other._size);
 			if(this==&other){
 				Vector temp=other;
-				//i.e. can't perform read & write operations simultaneously on same memory segment, 
-				//	   so temporary is created
+				/*Note: we can't perform read & write operations simultaneously on same memory segment, 
+					    so temporary is created */
 				for(__uint64 i=0;i<temp._size;++i)
 					data[_size++]=temp.data[i];
 			}
