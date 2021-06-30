@@ -35,22 +35,25 @@ class Vector{
 	__uchar *data;//i.e. data-buffer on heap
 	
 public:
-	Vector(__uint64 n=0)noexcept://i.e. default ctor
-		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){//i.e. allocating new buffer 'data'
+	Vector(__uint64 n=0)://i.e. default ctor
+		_size(0),_capacity((n>max_capacity)?throw:n),
+		data(new __uchar[sizeof(T)*_capacity]){//i.e. allocating new data-buffer
 		while(_size<_capacity)
 			new(data+sizeof(T)*_size++) T();
-		/*Note: empty-brackets initializes primitives with '0','\0',"\0" & for non-primitives,
-				it invokes default ctors */
+		/*Note: empty-brackets initializes primitives with '0','\0',"\0" and
+				for non-primitives, it invokes default ctors */
 	}
 #if __cplusplus >= 201103L
 	template<typename... _T>
-	Vector(__uint64 n,_T&&... val)noexcept://i.e. emplaced ctor for initializing whole vector with given value
+	Vector(__uint64 n,_T&&... val)://i.e. emplaced ctor for initializing whole vector with given value
 		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){
 		while(_size<_capacity)
 			new(data+sizeof(T)*_size++) T(std::forward<_T>(val)...);//i.e. perfect forwarding
+		/*Note: always perform perfect forwarding with universal reference 'T&&' (T == template_type),
+				in order to implement 'reference collapsing rules' efficiently */
 	}
 #else
-	Vector(__uint64 n,const T& val)noexcept:
+	Vector(__uint64 n,const T& val):
 		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){
 		while(_size<_capacity)
 			new(data+sizeof(T)*_size++) T(val);
@@ -83,7 +86,7 @@ public:
 #if __cplusplus >= 201103L
  	Vector(Vector&& other)noexcept://i.e. move ctor (C++11 Construct)
   		data(other.data),_size(other._size),_capacity(other._capacity){//1) steal other's data
-		other.data=nullptr;//2) set other's ptr to null state
+		other.data=nullptr;//2) set other's ptrs to null state
   		other._size=other._capacity=0;
 	}//Note: use "-fno-elide-constructors" flag to disable compiler optimization for move ctor (GCC Compilers)
  	
@@ -95,7 +98,7 @@ public:
   		data=other.data;//2) steal other's data
   		_size=other._size;
   		_capacity=other._capacity;
-  		other.data=nullptr;//3) set other to null state
+  		other.data=nullptr;//3) set other's ptrs to null state
   		other._size=other._capacity=0;
   		return *this;
 	}
@@ -109,13 +112,13 @@ public:
 		}
 		return *(T*)(data+sizeof(T)*n);
 	}
-	T* operator+(__uint32 n)const{//i.e. returns address of current pointed element (stored in 'data' buffer)
+	T* operator+(__uint32 n)const{//i.e. returns address of current pointed element (stored in data-buffer)
 		if (n>=_size){
 			cout<<"\nError: Given Index is Out of Bound!\n";
 	 		throw false;
 		}
 		return (T*)(data+sizeof(T)*n);
-		//Note: use this operator with '*' operator to access elements of 'data' buffer, i.e. cout<<*(vec+2);
+		//Note: use with '*' operator to access elements of data-buffer (i.e. cout<<*(vec+2); )
 	}
 	T& front()const{
 		if (_size)
@@ -135,23 +138,22 @@ public:
 private:
 	void reallocate(__uint64 n){
 		__uchar* new_data=new __uchar[sizeof(T)*n];
-	
+		
 		for(__uint64 i=0;i<(sizeof(T)*_size);++i)
 			new_data[i]=data[i];//i.e. copying data-buffer (byte by byte)
-		/*Note: this method behaves same as 'move constructing resources' in both C++ versions,
-			but may fail for storing a significant amount of large-size type objs */
-		
-		/*Alternate for transferring resources: */
-//	#if __cplusplus >= 201103L
-//		for(__uint64 i=0;i<_size;++i)//i.e. move constructing resources from 'other'
-//			new(new_data+sizeof(T)*i) T(std::move(*(T*)(data+sizeof(T)*i)));
-//			//Note: move() is used to convert lvalues to rvalues
-//	#else
-//		for(__uint64 i=0;i<_size;++i)//i.e. copy constructing resource from 'other'
-//			new(new_data+sizeof(T)*i) T(*(T*)(data+sizeof(T)*i));
-//		for(__uint64 i=0;i<_size;++i)//i.e. destroying previously stored resources from data-buffer
-//			((T*)(data+sizeof(T)*i))->~T();
-//	#endif
+		/*Note: this method saves us from extra constructions & destructions in both C++ versions,
+				but may fail to store significant amount of large-size type objects */
+
+		/*Alternate for transferring resources: (slightly slower process) */
+//		for(__uint64 i=0;i<_size;++i){
+//		#if __cplusplus >= 201103L
+//			new(new_data+sizeof(T)*i) T(std::move(*(T*)(data+sizeof(T)*i)));//i.e. move constructing obj to 'new_data'
+//			//Note: 'std::move' is used to convert lvalue-resources to rvalues
+//		#else
+//			new(new_data+sizeof(T)*i) T(*(T*)(data+sizeof(T)*i));//i.e. copy constructing obj to 'new_data'
+//		#endif
+//			((T*)(data+sizeof(T)*i))->~T();//i.e. calling dtor to destruct previously stored obj from data-buffer
+//		}
 		
 		delete[] data;
 		data=new_data;
@@ -172,7 +174,7 @@ public:
 	}
 #if __cplusplus >= 201103L
 	template<typename... _T>
-	void emplace_back(_T&&... val){//i.e. more efficient (as direct obj initialization is possible)
+	void emplace_back(_T&&... val){//i.e. more efficient (as direct object initialization is possible)
     	if(_size>=_capacity)
     		reallocate(_capacity?_capacity*=2:++_capacity);
     	new(data+sizeof(T)*_size++) T(forward<_T>(val)...);
@@ -180,13 +182,13 @@ public:
 #endif
 	void pop_back(){
 		if(_size)
-			((T*)(data+sizeof(T)*--_size))->~T();
+			((T*)(data+sizeof(T)*--_size))->~T();//i.e. explicit dtor call
+		/*Note: we can destruct objects of 'T' type that are mapped on data-buffer
+				by simply type-casting the buffer to object's pointer type */
 	}
 	void clear(){
 		while(_size)
-			((T*)(data+sizeof(T)*--_size))->~T();//i.e. explicit dtor call
-		/*Note: we can destruct objects of 'T' type that are mapped on buffer 'data'
-				by simply type-casting the buffer to object's ptr type */
+			((T*)(data+sizeof(T)*--_size))->~T();
 	}
 	bool reserve(__uint64 n){
 		if(n>max_capacity)
