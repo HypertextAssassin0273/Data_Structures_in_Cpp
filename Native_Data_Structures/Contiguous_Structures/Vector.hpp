@@ -45,7 +45,7 @@ public:
 	}
 #if __cplusplus >= 201103L
 	template<typename... _T>
-	Vector(__uint64 n,_T&&... val)://i.e. emplaced ctor for initializing whole vector with given value
+	Vector(__uint64 n,_T&&... val)://i.e. emplaced fill ctor
 		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){
 		while(_size<_capacity)
 			new(data+sizeof(T)*_size++) T(std::forward<_T>(val)...);//i.e. perfect forwarding
@@ -53,17 +53,10 @@ public:
 				in order to implement 'reference collapsing rules' efficiently */
 	}
 #else
-	Vector(__uint64 n,const T& val):
+	Vector(__uint64 n,const T& val)://i.e. fill ctor
 		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){
 		while(_size<_capacity)
 			new(data+sizeof(T)*_size++) T(val);
-	}
-#endif
-#if __cplusplus >= 201103L
-	Vector(const std::initializer_list<T>& list)noexcept://i.e. ctor for initializer-list (C++11 Construct)
-		_size(0),_capacity(list.size()),data(new __uchar[sizeof(T)*_capacity]){
-		for(const auto& it:list)//i.e. initializer_list can only be traversed with iterators
-			new(data+sizeof(T)*_size++) T(it);//i.e. performs copy of list iterator's elements
 	}
 #endif
 	Vector(const Vector& other)noexcept://i.e. copy ctor
@@ -76,21 +69,19 @@ public:
 			return *this;
  		clear();//1) clear existing resources
   		delete[] data;
-  		data=new __uchar[sizeof(T)*other._capacity];
- 		for(__uint64 i=0;i<other._size;++i)//2) constructing & copying resource from 'other'
-			new(data+sizeof(T)*i) T(other[i]);
- 		_size=other._size;
- 		_capacity=other._capacity;
+  		data=new __uchar[sizeof(T)*(_capacity=other._capacity)];
+ 		for(_size=0;_size<other._size;++_size)//2) constructing & copying resource from 'other'
+			new(data+sizeof(T)*_size) T(other[_size]);
 	 	return *this;
  	}
 #if __cplusplus >= 201103L
- 	Vector(Vector&& other)noexcept://i.e. move ctor (C++11 Construct)
+ 	Vector(Vector&& other)noexcept://i.e. move ctor
   		data(other.data),_size(other._size),_capacity(other._capacity){//1) steal other's data
 		other.data=nullptr;//2) set other's ptrs to null state
   		other._size=other._capacity=0;
 	}//Note: use "-fno-elide-constructors" flag to disable compiler optimization for move ctor (GCC Compilers)
  	
-	Vector& operator=(Vector&& other)noexcept{//i.e. move assignment func (C++11 Construct)
+	Vector& operator=(Vector&& other)noexcept{//i.e. move assignment func
   		if(this==&other)
 			return *this;
 		clear();//1) clear existing resources
@@ -101,6 +92,11 @@ public:
   		other.data=nullptr;//3) set other's ptrs to null state
   		other._size=other._capacity=0;
   		return *this;
+	}
+	Vector(const std::initializer_list<T>& list)noexcept://i.e. ctor for initializer-list
+		_size(0),_capacity(list.size()),data(new __uchar[sizeof(T)*_capacity]){
+		for(const auto& it:list)//i.e. initializer_list can only be traversed with iterators
+			new(data+sizeof(T)*_size++) T(it);//i.e. performs copy of list iterator's elements
 	}
 #endif
 	
