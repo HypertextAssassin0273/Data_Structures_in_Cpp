@@ -281,3 +281,7 @@ int main(){
 	l.traverse_backward();
 	return 0;
 }
+/* References:
+https://www.geeksforgeeks.org/xor-linked-list-a-memory-efficient-doubly-linked-list-set-1/
+https://www.youtube.com/watch?v=hMcHVfu3E8U
+*/
