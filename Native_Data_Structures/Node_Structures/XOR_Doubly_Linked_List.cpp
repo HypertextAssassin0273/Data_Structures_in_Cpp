@@ -10,10 +10,10 @@ class xor_list{//i.e. xor doubly linked-list (memory efficient)
 	    T data;
     	node *xnode;//i.e. contains Xor of next node & previous node
     	
-    #if __cplusplus < 201103L
-    	node(const T& data=T())noexcept://i.e. default ctor
+	#if __cplusplus < 201103L
+		node(const T& data=T())noexcept://i.e. default ctor
 			data(data),xnode(nullptr){}
-    #else
+	#else
 		template<typename... _T>
 		node(_T&&... data)noexcept://i.e. variadic template & emplaced ctor
 			data{std::forward<_T>(data)...},//i.e. perfect forwarding
