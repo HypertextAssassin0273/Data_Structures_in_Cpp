@@ -10,6 +10,3 @@
   <a href="https://www.boost.org/doc/libs/1_76_0/libs/graph/doc/index.html">b) Graphs</a> &emsp;
   <a href="https://www.boost.org/doc/libs/1_76_0/doc/html/heap.html">c) Heaps</a>
 <b/></p1>
-
-  ## C++ Boost Library [(see complete documentation)](https://www.boost.org/doc/libs/1_76_0/)
-#### [a) Circular Arrays](https://www.boost.org/doc/libs/1_76_0/doc/html/circular_buffer.html) &emsp; [b) Graphs](https://www.boost.org/doc/libs/1_76_0/libs/graph/doc/index.html) &emsp; [c) Heaps](https://www.boost.org/doc/libs/1_76_0/doc/html/heap.html)
