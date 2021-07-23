@@ -105,6 +105,10 @@ public:
 			data[_size++]=it;
 	}
 #endif
+	Vector(char *new_data,__uint32 new_size,__uint32 new_capacity)noexcept://i.e. special move ctor
+		_size(new_size),_capacity(new_capacity),data(new_data){}
+		/* Note: set the source pointer to null state after pointing 'data' buffer to resource
+		   Warning: use this ctor only for moving resource of current pointed type only! */
 	
  	/*i.e. Accessors & Mutators */
 	char& operator[](__uint32 n)const{
