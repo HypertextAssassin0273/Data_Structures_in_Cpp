@@ -29,35 +29,30 @@ class Vector{
 	typedef unsigned int __uint32;
 	typedef unsigned char __uchar;
 	
-	static const __uint32 max_capacity=~((__uint32)0);
-	//Tip: negate the min. value with extension (by typecasting) to get max. of any predefined datatype.
 	__uint32 _size,_capacity;
 	__uchar *data;//i.e. data-buffer on heap
-	
 public:
-	Vector(__uint64 n=0)://i.e. default ctor
+	static const __uint32 max_capacity=~((__uint32)0);
+	//Tip: negate the min. value with extension (by typecasting) to get max. of any predefined datatype.
+	
+#if __cplusplus >= 201103L
+	template<typename... _T>
+	Vector(__uint64 n=0,_T&&... val)://i.e. default & emplaced fill ctor
 		_size(0),_capacity((n>max_capacity)?throw:n),
 		data(new __uchar[sizeof(T)*_capacity]){//i.e. allocating new data-buffer
 		while(_size<_capacity)
-			new(data+sizeof(T)*_size++) T();
-		/*Note: empty-brackets initializes primitives with '0','\0',"\0" and
-				for non-primitives, it invokes default ctors */
-	}
-#if __cplusplus >= 201103L
-	template<typename... _T>
-	Vector(__uint64 n,_T&&... val)://i.e. emplaced fill ctor
-		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){
-		while(_size<_capacity)
 			new(data+sizeof(T)*_size++) T(std::forward<_T>(val)...);//i.e. perfect forwarding
-		/*Note: always perform perfect forwarding with universal reference 'T&&' (T == template_type),
-				in order to implement 'reference collapsing rules' efficiently */
 	}
+	/*Note: always perform perfect forwarding with universal reference '_T&&',
+			in order to implement 'reference collapsing rules' efficiently */
 #else
-	Vector(__uint64 n,const T& val)://i.e. fill ctor
+	Vector(__uint64 n=0,const T& val=T())://i.e. default & fill ctor
 		_size(0),_capacity((n>max_capacity)?throw:n),data(new __uchar[sizeof(T)*_capacity]){
 		while(_size<_capacity)
 			new(data+sizeof(T)*_size++) T(val);
 	}
+	/*Note: T() initializes primitives with '0' or '\0' & for non-primitives,
+			it invokes default ctors */
 #endif
 	Vector(const Vector& other)noexcept://i.e. copy ctor
 		_size(0),_capacity(other._capacity),data(new __uchar[sizeof(T)*_capacity]){
@@ -65,14 +60,14 @@ public:
 				new(data+sizeof(T)*_size++) T(other[_size]);
 	}
 	Vector& operator=(const Vector& other)noexcept{//i.e. copy assignment func
-		if(this==&other)//i.e. self-assignment protection
-			return *this;
- 		clear();//1) clear existing resources
-  		delete[] data;
-  		data=new __uchar[sizeof(T)*(_capacity=other._capacity)];
- 		for(_size=0;_size<other._size;++_size)//2) constructing & copying resource from 'other'
-			new(data+sizeof(T)*_size) T(other[_size]);
-	 	return *this;
+		if(this!=&other){//i.e. self-assignment protection
+ 			clear();//1) clear existing resources
+ 	 		delete[] data;
+ 	 		data=new __uchar[sizeof(T)*(_capacity=other._capacity)];
+ 			for(_size=0;_size<other._size;++_size)//2) constructing & copying resource from 'other'
+				new(data+sizeof(T)*_size) T(other[_size]);
+		}
+		return *this;
  	}
 #if __cplusplus >= 201103L
  	Vector(Vector&& other)noexcept://i.e. move ctor
@@ -82,16 +77,16 @@ public:
 	}//Note: use "-fno-elide-constructors" flag to disable compiler optimization for move ctor (GCC Compilers)
  	
 	Vector& operator=(Vector&& other)noexcept{//i.e. move assignment func
-  		if(this==&other)
-			return *this;
-		clear();//1) clear existing resources
-  		delete[] data;
-  		data=other.data;//2) steal other's data
-  		_size=other._size;
-  		_capacity=other._capacity;
-  		other.data=nullptr;//3) set other's ptrs to null state
-  		other._size=other._capacity=0;
-  		return *this;
+  		if(this!=&other){
+			clear();//1) clear existing resources
+  			delete[] data;
+  			data=other.data;//2) steal other's data
+  			_size=other._size;
+  			_capacity=other._capacity;
+  			other.data=nullptr;//3) set other's ptrs to null state
+  			other._size=other._capacity=0;
+  		}
+		return *this;
 	}
 	Vector(const std::initializer_list<T>& list)noexcept://i.e. ctor for initializer-list
 		_size(0),_capacity(list.size()),data(new __uchar[sizeof(T)*_capacity]){
@@ -99,6 +94,10 @@ public:
 			new(data+sizeof(T)*_size++) T(it);//i.e. performs copy of list iterator's elements
 	}
 #endif
+	Vector(__uchar *new_data,__uint32 new_size,__uint32 new_capacity)noexcept://i.e. special move ctor
+		_size(new_size),_capacity(new_capacity),data(new_data){}
+		/* Note: set the source pointer to null state after pointing 'data' buffer to resource
+		   Warning: use this ctor only for moving resource of current pointed type only! */
 	
  	/*i.e. Accessors */
 	T& operator[](__uint32 n)const{//i.e. gives read & write both access
@@ -108,11 +107,7 @@ public:
 		}
 		return *(T*)(data+sizeof(T)*n);
 	}
-	T* operator+(__uint32 n)const{//i.e. returns address of current pointed element (stored in data-buffer)
-		if (n>=_size){
-			cout<<"\nError: Given Index is Out of Bound!\n";
-	 		throw false;
-		}
+	T* operator+(__int64 n)const{//i.e. returns address of current pointed element (stored in data-buffer)
 		return (T*)(data+sizeof(T)*n);
 		//Note: use with '*' operator to access elements of data-buffer (i.e. cout<<*(vec+2); )
 	}
@@ -139,7 +134,7 @@ private:
 			new_data[i]=data[i];//i.e. copying data-buffer (byte by byte)
 		/*Note: this method saves us from extra constructions & destructions in both C++ versions,
 				but may fail to store significant amount of large-size type objects */
-
+		
 		/*Alternate for transferring resources: (slightly slower process) */
 //		for(__uint64 i=0;i<_size;++i){
 //		#if __cplusplus >= 201103L
@@ -156,24 +151,24 @@ private:
 	}
 public:
 #if __cplusplus >= 201103L
-	void push_back(T&& val){
+	template<typename _T>
+	void push_back(_T&& val){//i.e. type&& == universal_reference
 		if(_size>=_capacity)
 			reallocate(_capacity?_capacity*=2:++_capacity);
 			//i.e. if capacity is '0' then set it to '1' else twice it
-    	new(data+sizeof(T)*_size++) T(forward<T>(val));
+    	new(data+sizeof(T)*_size++) T(forward<_T>(val));
 	}
-#endif
-	void push_back(const T& val){
-    	if(_size>=_capacity)
-			reallocate(_capacity?_capacity*=2:++_capacity);
-    	new(data+sizeof(T)*_size++) T(val);
-	}
-#if __cplusplus >= 201103L
 	template<typename... _T>
 	void emplace_back(_T&&... val){//i.e. more efficient (as direct object initialization is possible)
     	if(_size>=_capacity)
     		reallocate(_capacity?_capacity*=2:++_capacity);
     	new(data+sizeof(T)*_size++) T(forward<_T>(val)...);
+	}
+#else
+	void push_back(const T& val){
+    	if(_size>=_capacity)
+			reallocate(_capacity?_capacity*=2:++_capacity);
+    	new(data+sizeof(T)*_size++) T(val);
 	}
 #endif
 	void pop_back(){
@@ -196,20 +191,23 @@ public:
 #if __cplusplus >= 201103L
 	template<typename... _T>
 	void resize(__uint64 n,_T&&... val){//i.e. emplaced_resize
-#else
-	void resize(__uint64 n,const T& val=T()){
-#endif
 		if(n>_size&&reserve(n))
 	    	while(_size<_capacity)
-	    	#if __cplusplus >= 201103L
     			new(data+sizeof(T)*_size++) T(forward<_T>(val)...);
-    		#else
-    			new(data+sizeof(T)*_size++) T(val);
-    		#endif
     	else
 			while(n<_size)
 			((T*)(data+sizeof(T)*--_size))->~T();
 	}
+#else
+	void resize(__uint64 n,const T& val=T()){
+		if(n>_size&&reserve(n))
+	    	while(_size<_capacity)
+    			new(data+sizeof(T)*_size++) T(val);
+    	else
+			while(n<_size)
+			((T*)(data+sizeof(T)*--_size))->~T();
+	}
+#endif
 	void shrink_to_fit(){//i.e. opppsite to reserve func
 		if(_size<_capacity)
    	 	    reallocate(_capacity=_size);
@@ -217,7 +215,7 @@ public:
 	
 	/*i.e. Comparison Operators */
 	bool operator==(const Vector& other)const{
-		if(other._size<_size)
+		if(_size!=other._size)
 			return false;
 		for (__uint64 i=0;i<_size;++i)
     		if (*(T*)(data+sizeof(T)*i)!=*(T*)(other.data+sizeof(T)*i))
@@ -268,14 +266,14 @@ public:
 		return out;
 	}
 	friend istream& operator>>(istream& in,Vector& self){
-		self.clear();
 		in.sync();//i.e. clears remaining content from buffer
-		for(T temp;self._size<self._capacity;++self._size){
+		T temp;
+		for(__uint64 i=0;i<self._size;++i){
 			in>>temp;
 		#if __cplusplus >= 201103L
-			new(self.data+sizeof(T)*self._size) T(move(temp));
+			*(T*)(self.data+sizeof(T)*i)=move(temp);
 		#else
-			new(self.data+sizeof(T)*self._size) T(temp);
+			*(T*)(self.data+sizeof(T)*i)=temp;
 		#endif
 		}
 		return in;
