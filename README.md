@@ -3,5 +3,10 @@
 #### [-Understanding C++ Standard-Template-Library(STL) Structures (by BoQian)](https://youtube.com/playlist?list=PLA0_W94naaYmk0uFVkUnXv0SiMIP5Jjlb)
 #### [-Learn Complete Data-Structures & Algorithms (by Programiz)](https://www.programiz.com/dsa)
 #### [-Sir Basit's DS Resources & Online Lectures Link (restricted access only for Fast students)](https://drive.google.com/drive/folders/1O3T0F4zCfkq_dDM9pz2alHvzn8ro2cUI?usp=sharing)
-## C++ Boost Library [(current release)](https://www.boost.org/doc/libs/1_76_0/)
-#### [a) Circular Arrays](https://www.boost.org/doc/libs/1_76_0/doc/html/circular_buffer.html) &emsp; [b) Graphs](https://www.boost.org/doc/libs/1_76_0/libs/graph/doc/index.html) &emsp; [c) Heaps](https://www.boost.org/doc/libs/1_76_0/doc/html/heap.html)
+
+<p1><h2>C++ Boost Library <a href="">(see complete documentation)</a></h2>
+  <b>
+  <a href="https://www.boost.org/doc/libs/1_76_0/doc/html/circular_buffer.html">a) Circular Arrays</a> &emsp;
+  <a href="https://www.boost.org/doc/libs/1_76_0/libs/graph/doc/index.html">b) Graphs</a> &emsp;
+  <a href="https://www.boost.org/doc/libs/1_76_0/doc/html/heap.html">c) Heaps</a>
+<b/></p1>
