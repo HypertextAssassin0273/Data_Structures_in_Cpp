@@ -4,7 +4,7 @@
 #### [-Learn Complete Data-Structures & Algorithms (by Programiz)](https://www.programiz.com/dsa)
 #### [-Sir Basit's DS Resources & Online Lectures Link (restricted access only for Fast students)](https://drive.google.com/drive/folders/1O3T0F4zCfkq_dDM9pz2alHvzn8ro2cUI?usp=sharing)
 
-<h2>C++ Boost Library <a href="https://www.boost.org/doc/libs/1_76_0/">(see complete documentation)</a></h2>
+<h2>C++ Boost Library <a href="https://www.boost.org/doc/libs/1_76_0/">(current release)</a></h2>
 <p1>
   <b>
     <a href="https://www.boost.org/doc/libs/1_76_0/doc/html/circular_buffer.html">a) Circular Arrays</a> &emsp;
