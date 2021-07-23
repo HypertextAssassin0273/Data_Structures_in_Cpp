@@ -10,73 +10,73 @@
 #endif
 
 template<typename T>
-struct Iterator{
-	typedef Iterator self;
-	
-	Iterator():ptr(nullptr){}
-	Iterator(T* ptr):ptr(ptr){}
-	
+class Base_Iterator{
+ 	typedef Base_Iterator self;
+public:
 	/*i.e. Accessors */
 	T& operator*()const{ return *ptr; }
-	T* operator->()const{ return ptr; }
-	T& operator[](__int64 index)const{ return ptr[index]; }
-	
-	/*i.e. Arithmetic Operators */
-	self& operator++(){ ++ptr; return *this; }//i.e. pre-increment
-	self& operator--(){ --ptr; return *this; }//i.e. pre-decrement
-	self operator++(int){ self temp(*this); ++ptr; return temp; }//i.e. post-increment
-	self operator--(int){ self temp(*this); --ptr; return temp; }//i.e. post-deccrement
-	self& operator+=(__int64 index){ ptr+=index; return *this; }
-	self& operator-=(__int64 index){ ptr-=index; return *this; }
-	self operator+(__int64 index)const{ return self(ptr+index); }
-	self operator-(__int64 index)const{ return self(ptr-index); }
-	friend self operator+(__int64 index,const self& other){ return self(index+other.ptr); }
-	__int64 operator-(const self& other)const{ return ptr-other.ptr; }//i.e. returns difference_type
-	
+	T* operator&()const{ return ptr; }
+	T& operator[](const __int64& index)const{ return ptr[index]; }
+		
 	/*i.e. Comparison Operators */
 	bool operator==(const self& other)const{ return ptr==other.ptr; }
 	bool operator!=(const self& other)const{ return ptr!=other.ptr; }
-	bool operator>(const self& other)const{ return ptr>other.ptr; }
-	bool operator<(const self& other)const{ return ptr<other.ptr; }
-	bool operator>=(const self& other)const{ return ptr>=other.ptr; }
-	bool operator<=(const self& other)const{ return ptr<=other.ptr; }
-private:
+protected:
+	Base_Iterator(T* ptr):ptr(ptr){}//i.e. ctor
+	
 	T* ptr;
 };
 
 template<typename T>
-struct Reverse_Iterator{
-	typedef Reverse_Iterator self;
-	
-	Reverse_Iterator():ptr(nullptr){}
-	Reverse_Iterator(T* ptr):ptr(ptr){}
-	
-	/*i.e. Accessors */
-	T& operator*()const{ return *ptr; }
-	T* operator->()const{ return ptr; }
-	T& operator[](__int64 index)const{ return ptr[index]; }
+class Iterator:public Base_Iterator<T>{
+	typedef Iterator self;
+	typedef Base_Iterator<T> base;
+public:
+	Iterator(T* ptr):base(ptr){}//i.e. default ctor
 	
 	/*i.e. Arithmetic Operators */
-	self& operator++(){ --ptr; return *this; }
-	self& operator--(){ ++ptr; return *this; }
-	self operator++(int){ self temp(*this); --ptr; return temp; }
-	self operator--(int){ self temp(*this); ++ptr; return temp; }
-	self& operator+=(__int64 index){ ptr-=index; return *this; }
-	self& operator-=(__int64 index){ ptr+=index; return *this; }
-	self operator+(__int64 index)const{ return self(ptr-index); }
-	self operator-(__int64 index)const{ return self(ptr+index); }
-	friend self operator+(__int64 index,const self& other){ return self(index+other.ptr); }
-	__int64 operator-(const self& other)const{ return other.ptr-ptr; }
+	self& operator++(){ ++base::ptr; return *this; }//i.e. pre-increment
+	self& operator--(){ --base::ptr; return *this; }//i.e. pre-decrement
+	self operator++(int){ self temp(*this); ++base::ptr; return temp; }//i.e. post-increment
+	self operator--(int){ self temp(*this); --base::ptr; return temp; }//i.e. post-decrement
+	self& operator+=(const __int64& index){ base::ptr+=index; return *this; }
+	self& operator-=(const __int64& index){ base::ptr-=index; return *this; }
+	self operator+(const __int64& index)const{ return self(base::ptr+index); }
+	friend self operator+(const __int64& index,const self& other){ return self(index+other.ptr); }
+	self operator-(const __int64& index)const{ return self(base::ptr-index); }
+	__int64 operator-(const self& other)const{ return base::ptr-other.base::ptr; }//i.e. returns difference_type
 	
 	/*i.e. Comparison Operators */
-	bool operator==(const self& other)const{ return ptr==other.ptr; }
-	bool operator!=(const self& other)const{ return ptr!=other.ptr; }
-	bool operator>(const self& other)const{ return ptr<other.ptr; }
-	bool operator<(const self& other)const{ return ptr>other.ptr; }
-	bool operator>=(const self& other)const{ return ptr<=other.ptr; }
-	bool operator<=(const self& other)const{ return ptr>=other.ptr; }
-private:
-	T* ptr;
+	bool operator>(const self& other)const{ return base::ptr>other.base::ptr; }
+	bool operator<(const self& other)const{ return base::ptr<other.base::ptr; }
+	bool operator>=(const self& other)const{ return base::ptr>=other.base::ptr; }
+	bool operator<=(const self& other)const{ return base::ptr<=other.base::ptr; }
+};
+
+template<typename T>
+class Reverse_Iterator:public Base_Iterator<T>{
+	typedef Reverse_Iterator self;
+	typedef Base_Iterator<T> base;
+public:
+	Reverse_Iterator(T* ptr):base(ptr){}
+	
+	/*i.e. Arithmetic Operators */
+	self& operator++(){ --base::ptr; return *this; }
+	self& operator--(){ ++base::ptr; return *this; }
+	self operator++(int){ self temp(*this); --base::ptr; return temp; }
+	self operator--(int){ self temp(*this); ++base::ptr; return temp; }
+	self& operator+=(const __int64& index){ base::ptr-=index; return *this; }
+	self& operator-=(const __int64& index){ base::ptr+=index; return *this; }
+	self operator+(const __int64& index)const{ return self(base::ptr-index); }
+	friend self operator+(const __int64& index,const self& other){ return self(index+other.ptr); }
+	self operator-(const __int64& index)const{ return self(base::ptr+index); }
+	__int64 operator-(const self& other)const{ return other.base::ptr-base::ptr; }
+	
+	/*i.e. Comparison Operators */
+	bool operator>(const self& other)const{ return base::ptr<other.base::ptr; }
+	bool operator<(const self& other)const{ return base::ptr>other.base::ptr; }
+	bool operator>=(const self& other)const{ return base::ptr<=other.base::ptr; }
+	bool operator<=(const self& other)const{ return base::ptr>=other.base::ptr; }
 };
 
 #endif
