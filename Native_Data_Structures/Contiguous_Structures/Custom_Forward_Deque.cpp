@@ -2,9 +2,9 @@
 #include"Sorts.hpp"
 
 void basic_operations(){
-	Forward_Deque<int,8> list,//i.e. default ctor
-						 list2(33,444);//i.e. (emplaced) fill ctor
-	Forward_Deque<int,8> list3{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};//i.e. initializer-list ctor (C++11)
+	Forward_Deque<int,8> list;//i.e. default ctor
+	Forward_Deque<int,8> list2(33,444);//i.e. (emplaced) fill ctor
+//	Forward_Deque<int,8> list3{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};//i.e. initializer-list ctor (C++11)
 	Forward_Deque<int,8> list4(list);//i.e. copy ctor
 //	Forward_Deque<int,8> list5(move(list));//i.e. move ctor (C++11)
 	
@@ -12,12 +12,12 @@ void basic_operations(){
 	
 //	for(auto& it:list3)//C++11
 //		cout<<it<<' ';
-	for(Forward_Deque<int,8>::iterator it=list.begin();it!=list.end();++it)//for both versions
+	for(Forward_Deque<int,8>::iterator it=list2.begin();it!=list2.end();++it)//for both versions
 		cout<<*it<<' ';
 	cout<<'\n';
 	
-	for(auto& it:list3.r_iterator())//C++11
-		cout<<it<<' ';
+//	for(auto& it:list3.r_iterator())//C++11
+//		cout<<it<<' ';
 //	for(Forward_Deque<int,8>::reverse_iterator it=list2.rbegin();it!=list2.rend();++it)
 //		cout<<*it<<' ';
 	
