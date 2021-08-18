@@ -10,7 +10,8 @@
 	1) Use this container only in C++11 & higher versions as its performance heavily 
 	   relies on "move semantics"
 	2) this implementation can easily become more memory-efficient by making it a 
-	   "vector of fixed-size dynamic arrays" instead of taking "vector of vectors" 
+	   "vector of fixed-size dynamic arrays" with only size attribute instead of taking 
+	   "vector of vectors" (as we don't need capacity attribute for our 1D Vector).
 */
 #ifndef FORWARD_DEQUE_GUARD
 #define FORWARD_DEQUE_GUARD 1
