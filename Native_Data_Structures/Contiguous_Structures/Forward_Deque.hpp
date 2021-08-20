@@ -7,14 +7,19 @@
 	4) doesn't reallocate previously assigned resources 
 	   (i.e. gives improved performance on constant use of push_backs & pop_backs)
 	Notes:
-	1) Use this container only in C++11 & higher versions as its performance heavily 
-	   relies on "move semantics"
+	1) this container is only offered in C++11 & higher versions since 
+	   its performance heavily relies on "move semantics"
 	2) this implementation can easily become more memory-efficient by making it a 
 	   "vector of fixed-size dynamic arrays" with only size attribute instead of taking 
 	   "vector of vectors" (as we don't need capacity attribute for our 1D Vector).
 */
 #ifndef FORWARD_DEQUE_GUARD
 #define FORWARD_DEQUE_GUARD 1
+
+#if __cplusplus < 201103L
+#error: This file requires compiler and library support for the ISO C++ 2011 standard,\
+		which can be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+#else
 
 #ifndef VECTOR_GUARD
 #include"Vector.hpp"
@@ -23,9 +28,8 @@
 template<typename T,size_t chunk_size=1>
 class Forward_Deque{//i.e. same as one-sided STL::deque
 	size_t _size;
-	Vector<Vector<T> > data_chunks;//i.e. stores chunks of data-buffer on heap
+	Vector<Vector<T>> data_chunks;//i.e. stores chunks of data-buffer on heap
 public:
-#if __cplusplus >= 201103L
 	template<typename... _T>
 	Forward_Deque(size_t n=0,_T&&... val):_size(n){//i.e. default & emplaced fill ctor
 		if(n>data_chunks.max_capacity)
@@ -40,40 +44,20 @@ public:
 			}
 		}
 	}
-#else
-	Forward_Deque(size_t n=0,const T& val=T()):_size(n){//i.e. default & fill ctor
-		if(n>data_chunks.max_capacity)
-			throw false;
-		if(n--){
-			data_chunks.reserve(n/chunk_size+1);
-			for(size_t i=0,j;i<n/chunk_size+1;++i){
-				data_chunks.push_back(Vector<T>());
-				data_chunks[i].reserve(chunk_size);
-				for(j=0;(j<chunk_size)&&(i*chunk_size+j<n+1);++j)
-					data_chunks[i].push_back(val);
-			}
-		}
-	}
-#endif
 	Forward_Deque(const Forward_Deque& other)noexcept://i.e. (deep) copy ctor
 		data_chunks(other.data_chunks),_size(other._size){}
 	
 	Forward_Deque& operator=(const Forward_Deque& other)noexcept{//i.e. copy assignment operator
-		if(this!=&other){
-			data_chunks=other.data_chunks;
-			_size=other._size;
-		}
+		data_chunks=other.data_chunks;
+		_size=other._size;
 		return *this;
 	}
-#if __cplusplus >= 201103L
 	Forward_Deque(Forward_Deque&& other)noexcept://i.e. move ctor
-		data_chunks(move(other.data_chunks)),_size(other._size){ other._size=0; }
+		data_chunks(std::move(other.data_chunks)),_size(other._size){ other._size=0; }
 	
 	Forward_Deque& operator=(Forward_Deque&& other)noexcept{//i.e. move assignment operator
-  		if(this!=&other){
-	  		data_chunks=move(other.data_chunks);
-  			_size=other._size; other._size=0;
-  		}
+	  	data_chunks=move(other.data_chunks);
+  		_size=other._size; other._size=0;
 		return *this;
 	}
 	Forward_Deque(const initializer_list<T>& list)noexcept://i.e. ctor for initializer-list
@@ -89,7 +73,6 @@ public:
 			}
 		}
 	}
-#endif
 	
  	/*** Accessors ***/
 	T& operator[](const size_t& n)const{//i.e. gives read & write both access
@@ -103,13 +86,12 @@ public:
 	bool empty()const{ return data_chunks.empty(); }
 	
 	T& front()const{ return data_chunks[0].front(); }
-	T& back()const{ return data_chunks[_size/chunk_size].back(); }
+	T& back()const{ return data_chunks[(_size-1)/chunk_size].back(); }
 	
 	__int64 size()const{ return _size; }
 	__int64 capacity()const{ return data_chunks.size()*chunk_size; }
 	
 	/*** Modifiers ***/
-#if __cplusplus >= 201103L
 	template<typename... _T>
 	void push_back(_T&&... val){//i.e. more efficient (as direct object initialization is possible)
 		if(_size>=capacity()){
@@ -118,15 +100,6 @@ public:
 		}
 		data_chunks[_size++/chunk_size].emplace_back(forward<_T>(val)...);
 	}
-#else
-	void push_back(const T& val){
-		if(_size>=capacity()){
-			data_chunks.push_back(Vector<T>());
-			data_chunks[_size/chunk_size].reserve(chunk_size);
-		}
-		data_chunks[_size++/chunk_size].push_back(val);
-	}
-#endif
 	void pop_back(){
 		if(_size)
 			data_chunks[--_size/chunk_size].pop_back();
@@ -140,8 +113,16 @@ public:
 		}
 		return true;
 	}
-#if __cplusplus >= 201103L
-	Vector<T> release_back_chunk(){
+	template<typename... _T>
+	void resize(const size_t& n,_T&&... val){//i.e. emplaced_resize
+		if(n>_size&&reserve(n))
+	    	while(_size<n)
+	    		data_chunks[_size++/chunk_size].emplace_back(forward<_T>(val)...);
+		else
+			while(n<_size)
+				data_chunks[--_size/chunk_size].pop_back();
+	}
+	Vector<T> release_chunk(){
 		if(data_chunks.empty())
 			return Vector<T>();//i.e. returns empty vector if no chunk_vector is found
 		_size-=data_chunks.back().size();
@@ -149,21 +130,6 @@ public:
 		data_chunks.pop_back();
 		return temp;
 		//Note: no need for explicit move as compiler itself performs R.V.O (Return Value Optimization)		
-	}
-	template<typename... _T>
-	void resize(const size_t& n,_T&&... val){//i.e. emplaced_resize
-		if(n>_size&&reserve(n))
-	    	while(_size<n)
-	    		data_chunks[_size++/chunk_size].emplace_back(forward<_T>(val)...);
-#else
-	void resize(const size_t& n,const T& val=T()){
-		if(n>_size&&reserve(n))
-	    	while(_size<n)
-				data_chunks[_size++/chunk_size].push_back(val);
-#endif
-		else
-			while(n<_size)
-				data_chunks[--_size/chunk_size].pop_back();
 	}
 	void shrink_to_fit(){//i.e. opppsite to reserve func
 		while((_size-1)/chunk_size+1<data_chunks.size())
@@ -206,13 +172,13 @@ private:
     	base_iterator(Vector<T>* ptr,const size_t& element_index)noexcept://i.e. ctor
 			ptr(ptr),index(element_index){}
  	public:
- 		/** accessors **/
+ 		/* accessors */
 		T& operator*()const{ return (*ptr)[index-(index/chunk_size)*chunk_size]; }
 		T* operator&()const{ return *ptr+(index-(index/chunk_size)*chunk_size); }//i.e. returns address of element
 		T& operator[](__int64 n)const{
 			return (*(ptr+n/chunk_size))[(index+n)-(index+n)/chunk_size*chunk_size];
 		}
-		/** comparators **/
+		/* comparators */
 		bool operator==(const self& other)const{ return index==other.index; }
 		bool operator!=(const self& other)const{ return index!=other.index; }
 	};
@@ -224,7 +190,7 @@ public:
     	iterator(Vector<T>* ptr,const __int64& element_index)noexcept://i.e. ctor
 			base(ptr,element_index){}
 		
-		/** modifiers (arithmetic operators) **/
+		/* modifiers (arithmetic operators) */
 		//prefix//
 		self& operator++(){ if(++base::index%chunk_size==0) ++base::ptr; return *this; }
 		self& operator--(){ if(base::index--%chunk_size==0) --base::ptr; return *this; }
@@ -234,7 +200,7 @@ public:
 		
 		__int64 operator-(const self& other)const{ return base::index-other.base::index; }//i.e. returns difference_type
 		
-		/** comparators **/
+		/* comparators */
 		bool operator>(const self& other)const{ return base::index>other.base::index; }
 		bool operator<(const self& other)const{ return base::index<other.base::index; }
 		bool operator>=(const self& other)const{ return base::index>=other.base::index; }
@@ -250,7 +216,7 @@ public:
 		sf_iterator(Vector<T>* base_ptr,Vector<T>* ptr,const __int64& element_index)noexcept:
 			b_ptr(base_ptr),base(ptr,element_index){}
 		
-		/** modifiers **/
+		/* modifiers */
 		//Note: following operator definitions are re-written/overloaded in order to avoid object-slicing
 		self& operator++(){ if(++base::index%chunk_size==0) ++base::ptr; return *this; }
 		self& operator--(){ if(base::index--%chunk_size==0) --base::ptr; return *this; }
@@ -276,7 +242,7 @@ public:
     	reverse_iterator(Vector<T>* ptr,const __int64& element_index)noexcept://i.e. ctor
 			base(ptr,element_index){}
 		
-		/** modifiers **/
+		/* modifiers */
 		self& operator++(){ if(base::index--%chunk_size==0) --base::ptr; return *this; }
 		self& operator--(){ if(++base::index%chunk_size==0) ++base::ptr; return *this; }
 		self operator++(int){ self temp(*this); if(base::index--%chunk_size==0) --base::ptr; return temp; }
@@ -284,7 +250,7 @@ public:
 		
 		__int64 operator-(const self& other)const{ return other.base::index-base::index; }
 		
-		/** comparators **/
+		/* comparators */
 		bool operator>(const self& other)const{ return base::index<other.base::index; }
 		bool operator<(const self& other)const{ return base::index>other.base::index; }
 		bool operator>=(const self& other)const{ return base::index<=other.base::index; }
@@ -300,7 +266,7 @@ public:
 		sr_iterator(Vector<T>* base_ptr,Vector<T>* ptr,const __int64& element_index)noexcept://i.e. ctor
 			b_ptr(base_ptr),base(ptr,element_index){}
 		
-		/** modifiers **/
+		/* modifiers */
 		self& operator++(){ if(base::index--%chunk_size==0) --base::ptr; return *this; }
 		self& operator--(){ if(++base::index%chunk_size==0) ++base::ptr; return *this; }
 		self operator++(int){ self temp(*this); if(base::index--%chunk_size==0) --base::ptr; return temp; }
@@ -327,7 +293,6 @@ public:
 	sr_iterator srbegin()const{ return sr_iterator(data_chunks+0,data_chunks+data_chunks.size()-1,_size-1); }
 	sr_iterator srend()const{ return sr_iterator(data_chunks+0,data_chunks+(-1),-1); }
 	
-#if __cplusplus >= 201103L
 private:
 	//Note: following structs are defined to use reverse & special_reverse iterators on 'range-based' loop
 	struct reverse_adapter{//i.e. light-weight adapter
@@ -350,7 +315,6 @@ public:
 	//Note: reversely traverse forward_deque using below methods (inside range-based loop)
 	reverse_adapter r_iterator()const{ return reverse_adapter(*this); }
 	special_reverse_adapter s_r_iterator()const{ return special_reverse_adapter(*this); }
-#endif
 	
 	/*** Overloaded 'cin/cout' Methods ***/
 	friend ostream& operator<<(ostream& out,const Forward_Deque& self){
@@ -365,4 +329,6 @@ public:
 		return in;
 	}
 };
+#endif
+
 #endif
