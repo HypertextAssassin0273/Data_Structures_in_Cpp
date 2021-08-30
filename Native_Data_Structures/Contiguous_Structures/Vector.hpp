@@ -11,7 +11,6 @@
 
 #ifndef _GLIBCXX_IOSTREAM 
 #include<iostream>
-using namespace std;
 #endif
 
 #if !ITERATOR_GUARD
@@ -102,7 +101,7 @@ public:
  	/*i.e. Accessors */
 	T& operator[](__uint32 n)const{//i.e. gives read & write both access
 		if (n>=_size){//i.e. parameter is of unsigned type, hence condition 'n<0' is excluded
-			cout<<"\nError: Given Index is Out of Bound!\n";
+			std::cout<<"\nError: Given Index is Out of Bound!\n";
 			throw false;
 		}
 		return *(T*)(data+sizeof(T)*n);
@@ -150,13 +149,13 @@ public:
 		if(_size>=_capacity)
 			reallocate(_capacity?_capacity*=2:++_capacity);
 			//i.e. if capacity is '0' then set it to '1' else twice it
-    	new(data+sizeof(T)*_size++) T(forward<_T>(val));
+    	new(data+sizeof(T)*_size++) T(std::forward<_T>(val));
 	}
 	template<typename... _T>
 	void emplace_back(_T&&... val){//i.e. more efficient (as direct object initialization is possible)
     	if(_size>=_capacity)
     		reallocate(_capacity?_capacity*=2:++_capacity);
-    	new(data+sizeof(T)*_size++) T(forward<_T>(val)...);
+    	new(data+sizeof(T)*_size++) T(std::forward<_T>(val)...);
 	}
 #else
 	void push_back(const T& val){
@@ -187,7 +186,7 @@ public:
 	void resize(__uint64 n,_T&&... val){//i.e. emplaced_resize
 		if(n>_size&&reserve(n))
 	    	while(_size<_capacity)
-    			new(data+sizeof(T)*_size++) T(forward<_T>(val)...);
+    			new(data+sizeof(T)*_size++) T(std::forward<_T>(val)...);
     	else
 			while(n<_size)
 			((T*)(data+sizeof(T)*--_size))->~T();
@@ -254,22 +253,15 @@ public:
 #endif
 	
 	/* Overloaded 'cin/cout' Methods */
-	friend ostream& operator<<(ostream& out,const Vector& self){
+	friend std::ostream& operator<<(std::ostream& out,const Vector& self){
 		for(unsigned int i=0;i<self._size;++i)
-			out<<*(T*)(self.data+sizeof(T)*i)<<" ";
+			out<<*(T*)(self.data+sizeof(T)*i)<<' ';
 		return out;
 	}
-	friend istream& operator>>(istream& in,Vector& self){
+	friend std::istream& operator>>(std::istream& in,Vector& self){
 		in.sync();//i.e. clears remaining content from buffer
-		T temp;
-		for(__uint64 i=0;i<self._size;++i){
-			in>>temp;
-		#if __cplusplus >= 201103L
-			*(T*)(self.data+sizeof(T)*i)=move(temp);
-		#else
-			*(T*)(self.data+sizeof(T)*i)=temp;
-		#endif
-		}
+		for(__uint64 i=0;i<self._size;++i)
+			in>>*(T*)(self.data+sizeof(T)*i);
 		return in;
 	}
 	
