@@ -3,7 +3,6 @@
 
 #ifndef _GLIBCXX_IOSTREAM 
 #include<iostream>
-using namespace std;
 #endif
 
 #if __cplusplus < 201103L
@@ -20,33 +19,31 @@ protected:
 		T key;
 		node *left,*right;
 		
-    	node(const T& key=T())noexcept:
+	#if __cplusplus >= 201103L
+		template<typename _T>
+    	node(_T&& key)noexcept:
+			key(std::forward<_T>(key)),left(nullptr),right(nullptr){}
+	#else
+		node(const T& key)noexcept:
 			key(key),left(nullptr),right(nullptr){}
+	#endif
 	};
 	
 	node *root;
 	__uint32 _size;
 	
 public:
-	BST()noexcept:
+	BST()noexcept://i.e. default ctor
 		root(nullptr),_size(0){}
-#if __cplusplus >= 201103L
-	//i.e.initializer_list based ctor
-	BST(initializer_list<T> list)noexcept:
-		root(nullptr),_size(0){
-		for(const auto& it:list)//i.e. traversing list through iterator
-        	insert(it);
-	}
-#endif
 	BST(const BST &other)noexcept://i.e. copy ctor
 		root(nullptr),_size(0){
 		copy(other.root);
 	}
 	BST& operator=(const BST &other)noexcept{//i.e. copy assignment func.
-		if(this==&other)//i.e. self-assignment protection
-			return *this;
-		clear();
-  		copy(other.root);
+		if(this!=&other){//i.e. self-assignment protection
+			clear();
+  			copy(other.root);
+  		}
   		return *this;
 	}
 #if __cplusplus >= 201103L
@@ -55,12 +52,17 @@ public:
 		other.root=nullptr; other._size=0;
 	}
 	BST& operator=(BST&& other)noexcept{//i.e. move assignment func (C++11 Construct)
-  		if(this==&other)
-			return *this;
-		clear();
-  		root=other.root; _size=other._size;
-  		other.root=nullptr; other._size=0;
-  		return *this;
+  		if(this!=&other){
+			clear();
+  			root=other.root; _size=other._size;
+  			other.root=nullptr; other._size=0;
+  		}
+		return *this;
+	}
+	BST(std::initializer_list<T> list)noexcept://i.e.initializer_list based ctor
+		root(nullptr),_size(0){
+		for(const auto& it:list)//i.e. traversing list through iterator
+        	insert(it);
 	}
 #endif	
 	
@@ -87,7 +89,7 @@ private:
 	}
 	void pre_order_traversal(node *current)const{
 		if(current){
-			cout<<current->key<<" ";
+			std::cout<<current->key<<' ';
 			pre_order_traversal(current->left);
 			pre_order_traversal(current->right);
 		}
@@ -95,7 +97,7 @@ private:
 	void in_order_traversal(node *current)const{
 		if (current){
 			in_order_traversal(current->left);
-			cout<<current->key<<" ";
+			std::cout<<current->key<<' ';
 			in_order_traversal(current->right);
 		}
 	}
@@ -103,7 +105,7 @@ private:
 		if(current){
 			post_order_traversal(current->left);
 			post_order_traversal(current->right);
-			cout<<current->key<<" ";
+			std::cout<<current->key<<' ';
 		}
 	}
 	node* insert(const T& key,node* current){
