@@ -153,7 +153,7 @@ public:
 	size_t total_records()const{ return data.size(); }
 	
 	template<typename... _attributes>//Note: _attributes&&... -> universal references
-	void insert(_attributes&&... key_record)//i.e. O(M*logN) time-complexity [here, N=total records, M=total attributes]
+	void insert(_attributes&&... key_record){//i.e. O(M*logN) time-complexity [here, N=total records, M=total attributes]
 		data.push_back(forward<_attributes>(key_record)...);
 		size_t index=0;
 		bool expander[]{
