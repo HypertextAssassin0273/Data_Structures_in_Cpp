@@ -1,11 +1,10 @@
 #if __cplusplus < 201103L
-#error This file requires compiler and library support for the ISO C++ 2011 standard,\
- which can be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+#error: This file requires compiler and library support for the ISO C++ 2011 standard,\
+		which can be enabled with the -std=c++11 or -std=gnu++11 compiler options.
 #else
 
 #ifndef _GLIBCXX_IOSTREAM 
 #include<iostream>
-using namespace std;
 #endif
 
 /*i.e. Type_Parse_Traits template struct for defining its' specialized templates*/
@@ -27,16 +26,16 @@ class instance_counter{//i.e. generates summary of each type after complete exec
 		
 		~counter(){//i.e. dtor
 			if(flag){
-				cout<<"\nSummary ("<<type_parse_traits<T>::name<<"):-\n"
+				std::cout<<"\nSummary ("<<type_parse_traits<T>::name<<"):-\n"
 				 	<<num_construct<<" direct constructions\n"
     	    	    <<num_copy<<" copies\n"
     	        	<<num_move<<" moves\n"
         	    	<<num_construct+num_copy+num_move<<" total constructions\n"
             		<<num_destruct<<" destructions ";
             	if ((num_construct+num_copy+num_move)==num_destruct)
-            	   	cout<<"(no leaks)\n";
+            	   	std::cout<<"(no leaks)\n";
             	else
-            	   	cout<<"(WARNING: potential leak)\n";
+            	   	std::cout<<"(WARNING: potential leak)\n";
 			}
         }
     };
