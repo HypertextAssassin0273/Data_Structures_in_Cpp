@@ -1,7 +1,9 @@
 #include "List.hpp"
 
+using std::cin;
+
 void test_case_1(){
-	cout<<"test_case_1:"<<endl;
+	cout<<"test_case_1:"<<'\n';
 #if __cplusplus >= 201103L
 	List<int> obj{1,2,2,3,3,3},obj2{99,88,77,66,55};
 #else
@@ -49,18 +51,25 @@ void test_case_1(){
 }
 
 void test_case_2(){
+#if __cplusplus >= 201103L
 	List<char> s1={'2','0','1','6'},s2={'2','0','2','0'};
-
-	cout<<"\nEquals to: "<<std::boolalpha<<(s1==s2)<<endl
-		<<"Not equals to: "<<(s1!=s2)<<endl
-		<<"Greater than: "<<(s1>s2)<<endl
-		<<"Less than: "<<(s1<s2)<<endl
-		<<"Greater than & equals to: "<<(s1>=s2)<<endl
-		<<"Less than & equals to: "<<(s1<=s2)<<endl;
+#else
+	List<char> s1,s2;
+	s1.push_back('2'); s2.push_back('2');
+	s1.push_back('0'); s2.push_back('0');
+	s1.push_back('1'); s2.push_back('2');
+	s1.push_back('6'); s2.push_back('0');
+#endif
+	cout<<"\nEquals to: "<<std::boolalpha<<(s1==s2)<<'\n'
+		<<"Not equals to: "<<(s1!=s2)<<'\n'
+		<<"Greater than: "<<(s1>s2)<<'\n'
+		<<"Less than: "<<(s1<s2)<<'\n'
+		<<"Greater than & equals to: "<<(s1>=s2)<<'\n'
+		<<"Less than & equals to: "<<(s1<=s2)<<'\n';
 }
 
 void test_case_3(){
-	cout<<"\ntest_case_2:"<<endl;
+	cout<<"\ntest_case_2:"<<'\n';
 	List<int> mylist;
 	
 	for (int i=1;i<10;++i)
@@ -77,40 +86,40 @@ void test_case_3(){
 	for (List<int>::iterator it=mylist.begin();it!=mylist.end();++it)
     	cout<<*it<<' ';
 #endif
-	cout<<endl;
+	cout<<'\n';
 }
 
 #if __cplusplus >= 201103L
 void test_case_4(){
-	cout<<"\ntest_case_3:"<<endl;
+	cout<<"\ntest_case_3:"<<'\n';
 	List<List<int>> obj{{1,2,3,4,5},{6,7,8,9,10}},obj2;
 	
 	obj.push_back(11,12,13,14,15);
 	obj.push_front(-5,-4,-3,-2,-1);
 	
-	cout<<"---------------"<<endl;
+	cout<<"---------------"<<'\n';
 	for(const auto& _it:obj){
 		for(const auto& it:_it.data)
 			cout<<it<<" ";
-		cout<<endl;
+		cout<<'\n';
 	}
-	cout<<"---------------"<<endl;
+	cout<<"---------------"<<'\n';
 	for(const auto& _it:obj.reverse_iterator()){
 		for(const auto& it:_it.data.reverse_iterator())
 			cout<<it<<" ";
-		cout<<endl;
+		cout<<'\n';
 	}
 //	obj2=obj; 
-	obj2=move(obj);//i.e. same as swap
+	obj2=std::move(obj);//i.e. same as swap
 //	obj.swap(obj2);
 
-	cout<<"---------------"<<endl;
+	cout<<"---------------"<<'\n';
 	for(const auto& it:obj2)
 		it.data.traverse_forward();
-	cout<<"---------------"<<endl;
+	cout<<"---------------"<<'\n';
 	for(const auto& it:obj2.reverse_iterator())
 		it.data.traverse_backward();
-	cout<<"---------------"<<endl;
+	cout<<"---------------"<<'\n';
 }
 #endif
 
