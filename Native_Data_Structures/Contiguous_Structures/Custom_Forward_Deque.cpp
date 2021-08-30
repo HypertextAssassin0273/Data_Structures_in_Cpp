@@ -2,15 +2,18 @@
 #include"String.hpp"
 #include"Sorts.hpp"
 
+using std::cout;
+using std::string;
+
 void basic_operations(){
 	const int CC=8; //i.e. chunk capacity
 	Forward_Deque<int,CC> list;//i.e. default ctor
 	Forward_Deque<int,CC> list2(33,444);//i.e. (emplaced) fill ctor
 	Forward_Deque<int,CC> list3{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};//i.e. initializer-list ctor
 	Forward_Deque<int,CC> list4(list);//i.e. copy ctor
-	Forward_Deque<int,CC> list5(move(list));//i.e. move ctor
+	Forward_Deque<int,CC> list5(std::move(list));//i.e. move ctor
 	
-	cout<<boolalpha<<(list<list2)<<' '<<(list2==list3)<<'\n';//i.e. comparison operators
+	cout<<std::boolalpha<<(list<list2)<<' '<<(list2==list3)<<'\n';//i.e. comparison operators
 	
 //	for(auto& it:list3)//range-based loop
 //		cout<<it<<' ';
@@ -58,7 +61,7 @@ void sort_by_iterators_test(){
 	Forward_Deque<int> fd{2,-32,12,3,6,5,8,1,9,2,-67,45,401,901,99,111};
 	//Note: try to avoid using initializer-list in bigger projects as it performs one extra copy of each element
 
-	cout<<"BEFORE SORTING: "<<fd<<endl;
+	cout<<"BEFORE SORTING: "<<fd<<'\n';
 	
 	//NOTE: only special forward & reverse iterators will work here
 	Sort::Bubble(fd.sfbegin(),fd.sfend());
@@ -66,7 +69,7 @@ void sort_by_iterators_test(){
 //	Sort::Selection(fd.sfbegin(),fd.sfend());
 //	Sort::Quick(fd.sfbegin(),fd.sfend());
 
-	cout<<"AFTER SORTING: "<<fd<<endl;
+	cout<<"AFTER SORTING: "<<fd<<'\n';
 }
 
 void reallocation_speed_test(){// Vector vs STL::Deque vs Forward_Deque
