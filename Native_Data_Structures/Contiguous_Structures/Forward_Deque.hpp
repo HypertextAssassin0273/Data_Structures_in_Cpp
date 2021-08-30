@@ -40,7 +40,7 @@ public:
 				data_chunks.push_back(Vector<T>());
 				data_chunks[i].reserve(chunk_size);
 				for(j=0;(j<chunk_size)&&(i*chunk_size+j<n+1);++j)
-					data_chunks[i].emplace_back(forward<_T>(val)...);
+					data_chunks[i].emplace_back(std::forward<_T>(val)...);
 			}
 		}
 	}
@@ -60,7 +60,7 @@ public:
   		_size=other._size; other._size=0;
 		return *this;
 	}
-	Forward_Deque(const initializer_list<T>& list)noexcept://i.e. ctor for initializer-list
+	Forward_Deque(const std::initializer_list<T>& list)noexcept://i.e. ctor for initializer-list
 		_size(list.size()){
 		if(_size){
 			auto&& it=list.begin();
@@ -98,7 +98,7 @@ public:
 			data_chunks.emplace_back();
 			data_chunks[_size/chunk_size].reserve(chunk_size);
 		}
-		data_chunks[_size++/chunk_size].emplace_back(forward<_T>(val)...);
+		data_chunks[_size++/chunk_size].emplace_back(std::forward<_T>(val)...);
 	}
 	void pop_back(){
 		if(_size)
@@ -117,7 +117,7 @@ public:
 	void resize(const size_t& n,_T&&... val){//i.e. emplaced_resize
 		if(n>_size&&reserve(n))
 	    	while(_size<n)
-	    		data_chunks[_size++/chunk_size].emplace_back(forward<_T>(val)...);
+	    		data_chunks[_size++/chunk_size].emplace_back(std::forward<_T>(val)...);
 		else
 			while(n<_size)
 				data_chunks[--_size/chunk_size].pop_back();
@@ -317,13 +317,12 @@ public:
 	special_reverse_adapter s_r_iterator()const{ return special_reverse_adapter(*this); }
 	
 	/*** Overloaded 'cin/cout' Methods ***/
-	friend ostream& operator<<(ostream& out,const Forward_Deque& self){
+	friend std::ostream& operator<<(std::ostream& out,const Forward_Deque& self){
 		for(size_t i=0;i<self.data_chunks.size();++i)
 			out<<self.data_chunks[i];
 		return out;
 	}
-	friend istream& operator>>(istream& in,Forward_Deque& self){
-		in.sync();//i.e. clears remaining content from buffer
+	friend std::istream& operator>>(std::istream& in,Forward_Deque& self){
 		for(size_t i=0;i<self.data_chunks.size();++i)
 			in>>self.data_chunks[i];
 		return in;
