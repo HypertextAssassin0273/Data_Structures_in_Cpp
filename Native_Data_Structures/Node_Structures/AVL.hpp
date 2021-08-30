@@ -3,7 +3,6 @@
 
 #ifndef _GLIBCXX_IOSTREAM 
 #include<iostream>
-using namespace std;
 #endif
 
 #if __cplusplus < 201103L
@@ -19,34 +18,32 @@ protected:
 		__int64 height,count;
 		node *left,*right;
 		
-    	node(const T& key)noexcept:
+	#if __cplusplus >= 201103L
+		template<typename _T>
+    	node(_T&& key)noexcept:
+			key(std::forward<_T>(key)),height(1),count(1),left(nullptr),right(nullptr){}
+	#else
+		node(const T& key)noexcept:
 			key(key),height(1),count(1),left(nullptr),right(nullptr){}
+	#endif
 	};
 	
 	node *root;
 	__int64 _size;
 	
 public:
-	AVL()noexcept:
+	AVL()noexcept://i.e. default ctor
 		root(nullptr),_size(0){}
-#if __cplusplus >= 201103L
-	//i.e.initializer_list based ctor
-	AVL(initializer_list<T> list)noexcept:
-		root(nullptr),_size(0){
-		for(const auto& it:list)//i.e. traversing list through iterator
-        	insert(it);
-	}
-#endif
 	AVL(const AVL &other)noexcept://i.e. copy ctor
 		root(nullptr),_size(0){
 		copy(other.root);
 	}
 	AVL& operator=(const AVL &other)noexcept{//i.e. copy assignment func.
-		if(this==&other)//i.e. self-assignment protection
-			return *this;
-		clear();
-  		copy(other.root);
-  		return *this;
+		if(this!=&other){//i.e. self-assignment protection
+			clear();
+  			copy(other.root);
+  		}
+		return *this;
 	}
 #if __cplusplus >= 201103L
  	AVL(AVL&& other)noexcept://i.e. move ctor (C++11 Construct)
@@ -54,14 +51,19 @@ public:
 		other.root=nullptr; other._size=0;
 	}
 	AVL& operator=(AVL&& other)noexcept{//i.e. move assignment func (C++11 Construct)
-  		if(this==&other)
-			return *this;
-		clear();
-  		root=other.root; _size=other._size;
-  		other.root=nullptr; other._size=0;
-  		return *this;
+  		if(this!=&other){
+			clear();
+  			root=other.root; _size=other._size;
+  			other.root=nullptr; other._size=0;
+  		}
+		return *this;
 	}
-#endif	
+	AVL(std::initializer_list<T> list)noexcept://i.e.initializer_list based ctor
+		root(nullptr),_size(0){
+		for(const auto& it:list)//i.e. traversing list through iterator
+        	insert(it);
+	}
+#endif
 	
 	__int64 size()const{ return _size; }
 	
@@ -69,14 +71,19 @@ public:
 	void pre_order_traversal()const{ pre_order_traversal(root); }
 	void post_order_traversal()const{ post_order_traversal(root); }
 	
+#if __cplusplus >= 201103L
+	template<typename _T>
+	void insert(_T&& key){ root=insert(std::forward<_T>(key),root); }//i.e. _T&& -> universal reference
+#else
 	void insert(const T& key){ root=insert(key,root); }
+#endif
 	void remove(const T& key){ root=remove(key,root); }
-	bool search(const T& key){ return search(root,key); }
+	bool search(const T& key)const{ return search(key,root); }
 	void clear(){ clear(root); root=nullptr; _size=0; }
 	
 	~AVL(){ clear(root); }
 	
-private:
+protected:
 	__int64 max(__int64 a,__int64 b)const{ return (a>b)?a:b; }
 	__int64 height(node *current)const{ return current?current->height:0; }
 	__int64 balance_factor(node *current)const{ return current?height(current->left)-height(current->right):0; }
@@ -105,7 +112,7 @@ private:
 	}
 	void pre_order_traversal(node *current)const{
 		if(current){
-			cout<<current->key<<'('<<current->count<<") ";
+			std::cout<<current->key<<'('<<current->count<<") ";
 			pre_order_traversal(current->left);
 			pre_order_traversal(current->right);
 		}
@@ -113,7 +120,7 @@ private:
 	void in_order_traversal(node *current)const{
 		if (current){
 			in_order_traversal(current->left);
-			cout<<current->key<<'('<<current->count<<") ";
+			std::cout<<current->key<<'('<<current->count<<") ";
 			in_order_traversal(current->right);
 		}
 	}
@@ -121,14 +128,23 @@ private:
 		if(current){
 			post_order_traversal(current->left);
 			post_order_traversal(current->right);
-			cout<<current->key<<'('<<current->count<<") ";
+			std::cout<<current->key<<'('<<current->count<<") ";
 		}
 	}
+#if __cplusplus >= 201103L	
+	template<typename _T>
+	node* insert(_T&& key,node* current){
+		if (!current){
+			++_size;
+			return new node(std::forward<_T>(key));
+		}
+#else
 	node* insert(const T& key,node* current){
 		if (!current){
 			++_size;
 			return new node(key);
 		}
+#endif
 		if (key==current->key){
         	++(current->count);
         	return current;
@@ -218,13 +234,13 @@ private:
     		}
 		return current;		
 	}
-	bool search(node* current,const T& key){
+	bool search(const T& key,node* current)const{
 		if(!current)
 			return false;
         if(key<current->key)
-			return search(current->left,key);
+			return search(key,current->left);
 		if(key>current->key)
-			return search(current->right,key);
+			return search(key,current->right);
 		return true;
 	}
 	void clear(node* current){
