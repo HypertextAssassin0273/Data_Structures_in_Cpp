@@ -245,7 +245,7 @@ int main(){
 //	MATA.remove(345.1,2);
 	
 //	MATA.search('d',3);//i.e. search record by any attribute in O(logN) time
-//	MATA.search('f',3);//Note: for duplicates, it shows the first-most inserted duplicate
+//	MATA.search('f',3);//Note: displays all duplicate records of provided key
 
 //	MATA.clear();
 	
