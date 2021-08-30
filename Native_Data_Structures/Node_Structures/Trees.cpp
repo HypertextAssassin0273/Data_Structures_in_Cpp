@@ -2,6 +2,8 @@
 #include"BST_to_Heap_Convertor.hpp"
 #include"AVL.hpp"
 
+using std::cout;
+
 void test_case_1(){
 	BST<int> tree;
 	
@@ -22,9 +24,9 @@ void test_case_1(){
 	cout<<"\nInorder traversal: ";
 	tree.in_order_traversal();
 	
-	cout<<"\nsize: "<<tree.size()<<endl;
+	cout<<"\nsize: "<<tree.size()<<'\n';
 	
-	cout<<"found: "<<boolalpha<<tree.search(10);
+	cout<<"found: "<<std::boolalpha<<tree.search(10);
 }
 
 #if __cplusplus >= 201103L
@@ -104,9 +106,9 @@ test_case_3(){
 	cout<<"\nInorder traversal: ";
 	tree.in_order_traversal();
 	
-	cout<<"\nSize: "<<tree.size()<<endl;
+	cout<<"\nSize: "<<tree.size()<<'\n';
 
-	cout<<"90 present: "<<boolalpha<<tree.search(90);
+	cout<<"90 present: "<<std::boolalpha<<tree.search(90);
 }
 
 int main(){
