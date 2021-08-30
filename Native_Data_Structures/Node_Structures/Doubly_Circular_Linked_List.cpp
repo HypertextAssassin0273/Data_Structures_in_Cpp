@@ -1,10 +1,12 @@
 #include<iostream>
-using namespace std;
 
 #if __cplusplus < 201103L
 #define nullptr 0L
 #define noexcept
+#else
+using std::forward;
 #endif
+
 
 template<typename T>
 class DCLL{//i.e. Doubly Circular Linked-List
@@ -24,11 +26,11 @@ class DCLL{//i.e. Doubly Circular Linked-List
 			data{std::forward<_T>(data)...},next(nullptr),prev(nullptr){}
 	#endif
 		
-		friend ostream& operator<<(ostream& out,const node& obj){
+		friend std::ostream& operator<<(std::ostream& out,const node& obj){
 			out<<obj.data;
 			return out;
 		}
-		friend istream& operator<<(istream& in,node& obj){
+		friend std::istream& operator<<(std::istream& in,node& obj){
 			in>>obj.data;
 			return in;
 		}
@@ -37,16 +39,10 @@ class DCLL{//i.e. Doubly Circular Linked-List
     node *tail;
 	__uint32 _size;
 public:
-	DCLL()noexcept:tail(nullptr),_size(0){}//i.e. default ctor
-	
-#if __cplusplus >= 201103L
-	//i.e.initializer_list based ctor
-	DCLL(initializer_list<T> list)noexcept:tail(nullptr),_size(0){
-		for(const auto& it:list)//i.e. traversing list through iterator
-        	push_back(it);
-	}
-#endif
-	DCLL(const DCLL &other)noexcept:tail(nullptr),_size(0){//i.e. copy ctor
+	DCLL()noexcept://i.e. default ctor
+		tail(nullptr),_size(0){}
+	DCLL(const DCLL &other)noexcept://i.e. copy ctor
+		tail(nullptr),_size(0){
     	if(!other.tail)
 			return;
 		node *it=other.tail->next;
@@ -56,16 +52,16 @@ public:
 		}while(it!=other.tail->next);
     }
     DCLL& operator=(const DCLL &other)noexcept{//i.e. copy assignment func.
-    	if(this==&other)//i.e. self-assignment protection
-    		return *this;
-		clear();//1) clear existing resources
-		if(!other.tail)
-			return *this;
-        node *it=other.tail->next;
-		do{
-    		push_back(it->data);//2) copy other's data
-    		it=it->next;
-		}while(it!=other.tail->next);
+    	if(this!=&other){//i.e. self-assignment protection
+			clear();//1) clear existing resources
+			if(!other.tail)
+				return *this;
+    	    node *it=other.tail->next;
+			do{
+    			push_back(it->data);//2) copy other's data
+    			it=it->next;
+			}while(it!=other.tail->next);
+		}
         return *this;
     }
 #if __cplusplus >= 201103L
@@ -75,19 +71,24 @@ public:
 	}//Note: use "-fno-elide-constructors" flag to disable compiler optimization for move ctor (GCC Compilers)
  	
 	DCLL& operator=(DCLL&& other)noexcept{//i.e. move assignment func (C++11 Construct)
-  		if(this==&other)
-			return *this;
-		clear();//1) clear existing resources
-  		tail=other.tail; _size=other._size;//2) steal other's data
-  		other.tail=nullptr; other._size=0;//3) set 'other' to null state
-  		return *this;
+  		if(this!=&other){
+			clear();//1) clear existing resources
+  			tail=other.tail; _size=other._size;//2) steal other's data
+  			other.tail=nullptr; other._size=0;//3) set 'other' to null state
+  		}
+		return *this;
+	}
+	DCLL(std::initializer_list<T> list)noexcept:
+		tail(nullptr),_size(0){//i.e.initializer_list based ctor
+		for(const auto& it:list)//i.e. traversing list through iterator
+        	push_back(it);
 	}
 #endif
 
 	/* Accessors & Mutators */
     T& operator[](__uint32 n){
 		if (n>=_size){//i.e. parameter is of unsigned type, hence condition 'n<0' is excluded
-			cout<<"\nError: Given Index is Out of Bound!\n";			
+			std::cout<<"\nError: Given Index is Out of Bound!\n";			
 	 		throw false;
 		}
 		if(n==_size-1)
@@ -299,27 +300,27 @@ public:
 	}
     void traverse_forward()const{
     	if(!tail){
-       		cout<<"List is empty!"<<endl;
+       		std::cout<<"List is empty!"<<'\n';
         	return;
     	}
 		node *temp=tail->next;
     	do{
-    		cout<<*temp<<" ";
+    		std::cout<<*temp<<' ';
     		temp=temp->next;
 		}while(temp!=tail->next);
-		cout<<endl;
+		std::cout<<'\n';
 	}
 	void traverse_backward()const{
     	if(!tail){
-       		cout<<"List is empty!"<<endl;
+       		std::cout<<"List is empty!"<<'\n';
         	return;
     	}
 		node *temp=tail;
     	do{
-    		cout<<*temp<<" ";
+    		std::cout<<*temp<<' ';
     		temp=temp->prev;
 		}while(temp!=tail);
-		cout<<endl;
+		std::cout<<'\n';
 	}
 	void merge(DCLL &other,const __int64& pos=0){
 		if(!other.tail||pos<0||pos>_size)
