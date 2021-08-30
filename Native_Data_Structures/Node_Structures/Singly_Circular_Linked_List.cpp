@@ -1,5 +1,4 @@
 #include<iostream>
-using namespace std;
 
 #if __cplusplus < 201103L
 #define nullptr 0L
@@ -21,11 +20,11 @@ class SCLL{//i.e. Singly Circular Linked-List
 			data{std::forward<_T>(data)...},next(nullptr){}
 	#endif
 	
-		friend ostream& operator<<(ostream& out,const node& obj){
+		friend std::ostream& operator<<(std::ostream& out,const node& obj){
 			out<<obj.data;
 			return out;
 		}
-		friend istream& operator<<(istream& in,node& obj){
+		friend std::istream& operator<<(std::istream& in,node& obj){
 			in>>obj.data;
 			return in;
 		}
@@ -35,13 +34,6 @@ class SCLL{//i.e. Singly Circular Linked-List
 public:
 	SCLL()noexcept:tail(nullptr){}//i.e. default ctor
 	
-#if __cplusplus >= 201103L  
-	//i.e.initializer_list based ctor
-	SCLL(initializer_list<T> list)noexcept:tail(nullptr){
-		for(const auto& it:list)//i.e. traversing list through iterator
-        	push_back(it);
-	}
-#endif
 	SCLL(const SCLL &other)noexcept:tail(nullptr){//i.e. copy ctor
 		if(!other.tail)
 			return;
@@ -52,17 +44,17 @@ public:
 		}while(it!=other.tail->next);
     }
     SCLL& operator=(const SCLL &other)noexcept{//i.e. copy assignment func.
-    	if(this==&other)//i.e. self-assignment protection
-    		return *this;
-		clear();//1) clear existing resources
-		if(!other.tail)
-			return *this;
-        node *it=other.tail->next;
-		do{
-    		push_back(it->data);//2) copy other's data
-    		it=it->next;
-		}while(it!=other.tail->next);
-        return *this;
+    	if(this!=&other){//i.e. self-assignment protection
+			clear();//1) clear existing resources
+			if(!other.tail)
+				return *this;
+        	node *it=other.tail->next;
+			do{
+    			push_back(it->data);//2) copy other's data
+    			it=it->next;
+			}while(it!=other.tail->next);
+    	}
+		return *this;
     }
 #if __cplusplus >= 201103L
  	SCLL(SCLL&& other)noexcept://i.e. move ctor (C++11 Construct)
@@ -71,12 +63,15 @@ public:
 	}//Note: use "-fno-elide-constructors" flag to disable compiler optimization for move ctor (GCC Compilers)
  	
 	SCLL& operator=(SCLL&& other)noexcept{//i.e. move assignment func (C++11 Construct)
-  		if(this==&other)
-			return *this;
-		clear();//1) clear existing resources
-  		tail=other.tail;//2) steal other's data
-  		other.tail=nullptr;//3) set other to null state
-  		return *this;
+  		if(this!=&other){
+			clear();//1) clear existing resources
+  			tail=other.tail;//2) steal other's data
+  			other.tail=nullptr;//3) set other to null state
+  		}
+	}
+	SCLL(std::initializer_list<T> list)noexcept:tail(nullptr){//i.e.initializer_list based ctor
+		for(const auto& it:list)//i.e. traversing list through iterator
+        	push_back(it);
 	}
 #endif
 	/* accessors */
@@ -95,7 +90,7 @@ public:
 #if __cplusplus >= 201103L
 	template<typename... _T>
 	void push_front(_T&&... new_data){//i.e. direct initialization is also possible
-		node* new_node=new node(forward<_T>(new_data)...);
+		node* new_node=new node(std::forward<_T>(new_data)...);
 #else
     void push_front(const T& new_data){//Complexity: O(1)
 		node* new_node=new node(new_data);
@@ -112,7 +107,7 @@ public:
 #if __cplusplus >= 201103L
 	template<typename... _T>
 	void push_back(_T&&... new_data){
-		node* new_node=new node(forward<_T>(new_data)...);
+		node* new_node=new node(std::forward<_T>(new_data)...);
 #else
     void push_back(const T& new_data){//Complexity: O(1)
     	node* new_node=new node(new_data);
@@ -158,10 +153,10 @@ public:
 	template<typename... _T>
 	void push_middle(_T&&... new_data){
 		if(!tail||tail->next==tail){
-			push_back(forward<_T>(new_data)...);
+			push_back(std::forward<_T>(new_data)...);
 			return;
 		}
-		node *new_node=new node(forward<_T>(new_data)...);
+		node *new_node=new node(std::forward<_T>(new_data)...);
 #else
 	void push_middle(const T& new_data){
 	    if(!tail||tail->next==tail){
@@ -196,15 +191,15 @@ public:
 	}
     void traverse()const{
     	if(!tail){
-       		cout<<"List is empty!"<<endl;
+       		std::cout<<"List is empty!"<<'\n';
         	return;
     	}
     	node *temp=tail->next;
     	do{
-    		cout<<*temp<<" ";
+    		std::cout<<*temp<<' ';
     		temp=temp->next;
 		}while(temp!=tail->next);
-		cout<<endl;
+		std::cout<<'\n';
 	}
 	void clear(){
 		if(!tail)
