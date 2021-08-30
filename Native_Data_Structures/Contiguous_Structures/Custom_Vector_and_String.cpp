@@ -6,7 +6,14 @@ typedef unsigned long long __uint64;
 typedef unsigned int __uint32;
 typedef unsigned short __uint16;
 
-#if __cplusplus >= 201103L
+#if __cplusplus < 201103L
+typedef String _string;
+typedef Vector<String> string_V1;
+typedef Vector<int> int_V1;
+typedef Vector<int_V1> int_V2;
+
+#define override
+#else
 #include"instance_counter.hpp"
 /*i.e. defining specialized templates to get their typename at run-time*/
 REGISTER_PARSE_TYPE(String);
@@ -19,13 +26,14 @@ REGISTER_PARSE_TYPE(Vector<int_V1>);
 typedef counted<Vector<int_V1>> int_V2;
 REGISTER_PARSE_TYPE(Vector<Vector<Vector<int>>>);
 //Note: Here, macro replaces the specialized template struct alongwith its static member initialization
-#else
-typedef String _string;
-typedef Vector<String> string_V1;
-typedef Vector<int> int_V1;
-typedef Vector<int_V1> int_V2;
-#define override
+
+using std::move;
 #endif
+using std::cout;
+using std::cin;
+using std::istream;
+using std::ostream;
+
 
 test_case_1(){
 	int_V1 vec,	   	   		//i.e. just declaration, no allocation
@@ -33,49 +41,42 @@ test_case_1(){
 	   	   vec2(5,123);   	//i.e. allocate size with 1st arg & initialize the whole vector with 2nd arg
 //	int_V1 vec4{99,88,77};	//i.e. allocate with brace enclosed initializer_list ctor(C++11)
 
-	cout<<"\nvec:"<<endl
-		<<"size: "<<vec.size()<<endl
-		<<"capacity: "<<vec.capacity()<<endl;
+	cout<<"\nvec:"<<'\n'
+		<<"size: "<<vec.size()<<'\n'
+		<<"capacity: "<<vec.capacity()<<'\n';
 	vec.push_back(2);
 	vec.push_back(4);
-	cout<<"(after 2 push_back)"<<endl
-		<<"size: "<<vec.size()<<endl
-		<<"capacity: "<<vec.capacity()<<endl
+	cout<<"(after 2 push_back)"<<'\n'
+		<<"size: "<<vec.size()<<'\n'
+		<<"capacity: "<<vec.capacity()<<'\n'
 		<<"elements: ";
 	for(int i=0;i<vec.size();++i)
-		cout<<vec[i]<<" ";
+		cout<<vec[i]<<' ';
 	
-	cout<<"\n\nvec1:\nelements: ";
-	for(int i=0;i<vec1.size();++i)
-		cout<<vec1[i]<<" ";
-	cout<<"\nsize: "<<vec1.size()<<endl
-		<<"capacity: "<<vec1.capacity()<<endl;
+	cout<<"\n\nvec1:\nelements: "<<vec1
+		<<"\nsize: "<<vec1.size()<<'\n'
+		<<"capacity: "<<vec1.capacity()<<'\n';
 	vec1.push_back(4);
-	cout<<"(after push_back)"<<endl
-		<<"size: "<<vec1.size()<<endl
-		<<"capacity: "<<vec1.capacity()<<endl;
+	cout<<"(after push_back)"<<'\n'
+		<<"size: "<<vec1.size()<<'\n'
+		<<"capacity: "<<vec1.capacity()<<'\n';
 	
-	cout<<"\nvec2:\nelements: ";
-	for(int i=0;i<vec2.size();++i)
-		cout<<vec2[i]<<" ";
-	cout<<"\nsize: "<<vec2.size()<<endl
-		<<"capacity: "<<vec2.capacity()<<endl;
+	cout<<"\nvec2:\nelements: "<<vec2
+		<<"\nsize: "<<vec2.size()<<'\n'
+		<<"capacity: "<<vec2.capacity()<<'\n';
 	vec2.pop_back();
-	cout<<"(after pop_back)"<<endl
-		<<"size: "<<vec2.size()<<endl
-		<<"capacity: "<<vec2.capacity()<<endl;
+	cout<<"(after pop_back)"<<'\n'
+		<<"size: "<<vec2.size()<<'\n'
+		<<"capacity: "<<vec2.capacity()<<'\n';
 	vec2.reserve(10);
-	cout<<"(after reserve)"<<endl
-		<<"size: "<<vec2.size()<<endl
-		<<"capacity: "<<vec2.capacity()<<endl;
+	cout<<"(after reserve)"<<'\n'
+		<<"size: "<<vec2.size()<<'\n'
+		<<"capacity: "<<vec2.capacity()<<'\n';
 	vec2.shrink_to_fit();
-	cout<<"(after shrink_to_fit)"<<endl
-		<<"size: "<<vec2.size()<<endl
-		<<"capacity: "<<vec2.capacity()<<endl
-		<<"elements: ";
-	for(int i=0;i<vec2.size();++i)
-		cout<<vec2[i]<<" ";
-	cout<<endl;
+	cout<<"(after shrink_to_fit)"<<'\n'
+		<<"size: "<<vec2.size()<<'\n'
+		<<"capacity: "<<vec2.capacity()<<'\n'
+		<<"elements: "<<vec2<<'\n';
 }
 
 test_case_2(){
@@ -87,19 +88,19 @@ test_case_2(){
     	cout<<"After push_back: ";
     	for(int i=0;i<v.size();++i)
 			cout<<v[i]<<", ";
-    	cout << "(size: "<<v.size()<<", capacity: "<<v.capacity()<<")\nv[2]: "<<v[2]<<endl;
+    	cout << "(size: "<<v.size()<<", capacity: "<<v.capacity()<<")\nv[2]: "<<v[2]<<'\n';
  		v.pop_back();
    		cout<<"After pop back: ";
 		for(int i=0;i<v.size();++i)
 			cout<<v[i]<<", ";
-    	cout << "(size: "<<v.size()<<", capacity: "<<v.capacity()<<')'<<endl;
+    	cout << "(size: "<<v.size()<<", capacity: "<<v.capacity()<<')'<<'\n';
     	v.clear();
     	cout<<"After clear: "
-    		<< "(size: "<<v.size()<<", capacity: "<<v.capacity()<<')'<<endl
+    		<< "(size: "<<v.size()<<", capacity: "<<v.capacity()<<')'<<'\n'
     		<<"After 3 push_back: ";
 		for(int i=1;i<=3;++i)
 		    v.push_back(i),cout<<v[i-1]<<", ";
-    	cout << "(size: "<<v.size()<<", capacity: "<<v.capacity()<<')'<<endl;
+    	cout << "(size: "<<v.size()<<", capacity: "<<v.capacity()<<')'<<'\n';
   	}
     _string c;
     for(char i='a';i<'i';++i)
@@ -107,22 +108,22 @@ test_case_2(){
 	cout<<"\nChar data_type (vector c):\nAfter push_back: ";
     for(int i=0;i<c.size();++i)
 			cout<<c[i]<<", ";
-    cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<")\nc[2]: "<<c[2]<<endl;
+    cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<")\nc[2]: "<<c[2]<<'\n';
     c.pop_back();
     cout<<"After pop back: ";
     for(int i=0;i<c.size();++i)
 			cout<<c[i]<<", ";
-	cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<')'<<endl
+	cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<')'<<'\n'
 		<<"After reserve: ";
 	c.reserve(15);
 	for(int i=0;i<c.size();++i)
 		cout<<c[i]<<", ";
-	cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<')'<<endl
+	cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<')'<<'\n'
 		<<"After resize: ";
 		c.resize(10,'z');
 		for(int i=0;i<c.size();++i)
 			cout<<c[i]<<", ";
-		cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<')'<<endl;
+		cout<<"(size: "<<c.size()<<", capacity: "<<c.capacity()<<')'<<'\n';
 	
 	cout<<"\nString data_type\nElement in vector a: ";
 #if __cplusplus >= 201103L
@@ -133,16 +134,16 @@ test_case_2(){
 #endif
 	for(int i=0;i<a.size();++i)
 		cout<<a[i]<<", ";
-	cout<<"(size: "<<a.size()<<", capacity: "<<a.capacity()<<')'<<endl
+	cout<<"(size: "<<a.size()<<", capacity: "<<a.capacity()<<')'<<'\n'
 		<<"After resize: ";
 	a.resize(8);
 	for(int i=0;i<a.size();++i)
 		cout<<a[i]<<", ";
-	cout<<"(size: "<<a.size()<<", capacity: "<<a.capacity()<<')'<<endl;
+	cout<<"(size: "<<a.size()<<", capacity: "<<a.capacity()<<')'<<'\n';
 }
 
 void test_case_3(){
-	cout<<"\n\nDeclaring Nested Array without Initializer-List & Index-based Accessing:-"<<endl;
+	cout<<"\n\nDeclaring Nested Array without Initializer-List & Index-based Accessing:-"<<'\n';
 	Vector<int_V2> vec_3d;//i.e. 3D(l x m x n); l=3,m=10,n=10
 	vec_3d.reserve(3);
 	{//i.e. destroys 2d arr
@@ -163,11 +164,11 @@ void test_case_3(){
 	/*Note: copy assignment (3d to x), copy ctor (x to y)
 	  For Testing: Replace 'vec_x' with others in below loop */
 	for(short i=0;i<vec_x.size();++i){
-		cout<<"\n2D Vector "<<i+1<<":"<<endl;
+		cout<<"\n2D Vector "<<i+1<<":"<<'\n';
 		for(short j=0;j<vec_x[0].size();++j){
 			for(short k=0;k<vec_x[0][0].size();++k)
 				cout<<vec_x[i][j][k]+(i*10)<<" ";
-			cout<<endl;
+			cout<<'\n';
 		}
 	}
 	cout<<"\nTotal Size Occupied: "<<vec_3d.size()*vec_3d[0].size()*vec_3d[0][0].size();
@@ -288,11 +289,11 @@ test_case_4(){
 	items_list.push_back(new Bakery_Items(222,"sandwitch","home-made"));
 	items_list.push_back(new Baking_Items);
 	
-	cout<<"\nItems List (Abstract Objs):"<<endl;
+	cout<<"\nItems List (Abstract Objs):"<<'\n';
 	for(int i=0;i<items_list.size();++i)
-		cout<<i+1<<*items_list[i]<<endl;
+		cout<<i+1<<*items_list[i]<<'\n';
 	
-	cout<<"\nClearing Items List:"<<endl;
+	cout<<"\nClearing Items List:"<<'\n';
 	for(int i=0;i<items_list.size();++i)
 		delete items_list[i];
 }
@@ -311,7 +312,7 @@ void test_case_5(){
 	v.push_back(5);
 	v.push_back(8);
 #endif
-	cout<<"Before:"<<endl;
+	cout<<"Before:"<<'\n';
 #if __cplusplus >= 201103L
 	for(const auto& it:v) 										//i.e. efficient alternate to below method (C++11)
 		cout<<it<<" ";
@@ -326,19 +327,19 @@ void test_case_5(){
 //	for(Reverse_Iterator<int> it=v.rbegin();it!=v.rend();++it) 	//i.e. 2) reverse direction/ descending order
 //		cout<<*it<<" ";
 //#endif
-	cout<<endl;
+	cout<<'\n';
 	
 //	Sort::Bubble(v.begin(),v.end());							//i.e. un-comment any of the following sort
 //	Sort::Insertion(v.begin(),v.end());							//	   to see its' working at a time
 //	Sort::Selection(v.begin(),v.end());
 	Sort::Quick(v.begin(),v.end());
 
-	cout<<"After:"<<endl;
+	cout<<"After:"<<'\n';
 	for(Vector<int>::r_iterator it=v.rend()-1;it!=v.rbegin()-1;--it)    //i.e. 1) forward direction/ ascending order
 		cout<<*it<<" ";
 //	for(const Vector<int>::iterator& it=v.end()-1;it!=v.begin()-1;--it) //i.e. 2) reverse direction/ descending order
 //		cout<<*it<<" ";
-	cout<<endl;
+	cout<<'\n';
 }
 
 #if __cplusplus >= 201103L
@@ -362,11 +363,11 @@ test_case_6(){
 					};//i.e. size (3Dx2Dx1D): 2x(3,4)x4
 	
 	for(const auto &__it:vec_3d){
-		cout<<"\n2D Vector "<<(&__it-&vec_3d[0])+1<<":"<<endl;
+		cout<<"\n2D Vector "<<(&__it-&vec_3d[0])+1<<":"<<'\n';
 		for(const auto &_it:__it){
 			for(const auto &it:_it)
 				cout<<it<<" ";
-			cout<<endl;
+			cout<<'\n';
 		}
 	}
 	
@@ -375,7 +376,7 @@ test_case_6(){
 		cout<<"yes";
 	else
 		cout<<"no";
-	cout<<"\nRe-assigning rvalue obj to lvalue holder (invokes move assignment func):"<<endl;
+	cout<<"\nRe-assigning rvalue obj to lvalue holder (invokes move assignment func):"<<'\n';
 	obj=int_V1(5,404); 
 	for(const auto &it:obj)
 		cout<<it<<" ";
@@ -385,22 +386,22 @@ test_case_6(){
 	vec_3d[0][1].clear();
 	vec_3d[1][0].clear();
 	for(short i=0;i<vec_3d.size();++i){
-		cout<<"\n2D Vector "<<i+1<<":"<<endl;
+		cout<<"\n2D Vector "<<i+1<<":"<<'\n';
 		for(short j=0;j<vec_3d[i].size();++j){
 			for(short k=0;k<vec_3d[i][j].size();++k)
 				cout<<vec_3d[i][j][k]<<" ";
-			cout<<endl;
+			cout<<'\n';
 		}
 	}
 	cout<<"\n------------\n";
 	cout<<"clearing vector 1:";
 	vec_3d[0].clear();
 	for(const auto &__it:vec_3d){
-		cout<<"\n2D Vector "<<(&__it-&vec_3d[0])+1<<":"<<endl;
+		cout<<"\n2D Vector "<<(&__it-&vec_3d[0])+1<<":"<<'\n';
 		for(const auto &_it:__it){
 			for(const auto &it:_it)
 				cout<<it<<" ";
-			cout<<endl;
+			cout<<'\n';
 		}
 	}
 }
@@ -414,7 +415,7 @@ public:
 	Fun(char c='\0',int i=0,_string&& s=_string()):c(c),i(i),s(move(s)){}
 	
 	friend ostream& operator<<(ostream& out,const Fun& obj){
-		out<<obj.c<<", "<<obj.i<<", "<<obj.s<<endl;
+		out<<obj.c<<", "<<obj.i<<", "<<obj.s<<'\n';
 		return out;
 	}
 	friend istream& operator>>(istream& in,Fun& obj){
@@ -427,7 +428,7 @@ REGISTER_PARSE_TYPE(Fun);//i.e. defining specialized template for 'Fun' type to 
 test_case_7(){
 	{//i.e. destroys vec obj
 		Vector<counted<Fun>> vec;
-		cout<<"\nEmplaced-back objs:"<<endl;
+		cout<<"\nEmplaced-back objs:"<<'\n';
 		counted<Fun> obj('1',22,"333");
 		vec.emplace_back(obj);//i.e. here, works same as push_back (passing const reference)
 		vec.emplace_back(counted<Fun>('2',33,"444"));//i.e. pasing temporary (rvalue) obj of 'Fun' type
@@ -444,7 +445,7 @@ test_case_7(){
 
 void test_case_8(){
 	cout<<"\nVector working as Container for Student Class/"
-		  "Declaring Vector<String> inside Student Class:-"<<endl;
+		  "Declaring Vector<String> inside Student Class:-"<<'\n';
 	
 	class Students{//i.e. local class
 		unsigned long ID;
@@ -474,21 +475,21 @@ void test_case_8(){
 			unsigned short Current_Courses_Count;
 			cin>>Current_Courses_Count;
 			Current_Courses.reserve(Current_Courses_Count);
-			cout<<"Enter All Current Courses:"<<endl;
+			cout<<"Enter All Current Courses:"<<'\n';
 			cin>>Current_Courses;
 		}
 		void Display_Data()const{
-			cout<<"ID: "<<ID<<endl
-				<<"Batch: "<<Batch<<endl
-				<<"Expected Graduation Year: "<<Expected_Graduation_Year<<endl
-				<<"Discipline: "<<Discipline<<endl
-				<<"Current Courses: "<<endl<<"\t";
+			cout<<"ID: "<<ID<<'\n'
+				<<"Batch: "<<Batch<<'\n'
+				<<"Expected Graduation Year: "<<Expected_Graduation_Year<<'\n'
+				<<"Discipline: "<<Discipline<<'\n'
+				<<"Current Courses: "<<'\n'<<"\t";
 			for(const auto& it:Current_Courses)
 				cout<<it<<" ";
 		}
 	};
 	
-	cout<<"\nAssignment of Student Obj to Vector through brace enclosed initializer-list:"<<endl;
+	cout<<"\nAssignment of Student Obj to Vector through brace enclosed initializer-list:"<<'\n';
 	{
 		Students obj(190273,2019,2023,"BS (CS)",{"Data-Structures","NC","TOA","Prob & Stats","Socio"}),
 				 obj2(obj),obj3;
@@ -497,24 +498,24 @@ void test_case_8(){
 		temp_vec=Vec; //i.e.copy assignment
 		cout<<"\nAFTER COPY ASSIGNMENT: (temp_vec)\n";
 		for(auto& it:temp_vec)
-			cout<<"Student "<<(&it-&temp_vec[0])+1<<" Data:"<<endl,
-			it.Display_Data(),cout<<endl;
+			cout<<"Student "<<(&it-&temp_vec[0])+1<<" Data:"<<'\n',
+			it.Display_Data(),cout<<'\n';
 			/*Note: You can run multiple commands with one ';' provided that they are seperated with comma
 					& end with semicolon */
 		
 		Vector<Students> temp={Students(1,1,1,"1",{"1"}),Students(2,2,2,"2",{"2","2"}),Students(3,3,3,"3",{"3","3","3"})};
 		Swap(Vec,temp);
-		cout<<"\nAFTER SWAP:\nVec:"<<endl;
+		cout<<"\nAFTER SWAP:\nVec:"<<'\n';
 		for(const auto& it:Vec)
-			cout<<"Student "<<(&it-&Vec[0])+1<<" Data:"<<endl,
-			it.Display_Data(),cout<<endl;
-		cout<<"temp:"<<endl;
+			cout<<"Student "<<(&it-&Vec[0])+1<<" Data:"<<'\n',
+			it.Display_Data(),cout<<'\n';
+		cout<<"temp:"<<'\n';
 		for(const auto& it:temp)
-			cout<<"Student "<<(&it-&temp[0])+1<<" Data:"<<endl,
-			it.Display_Data(),cout<<endl;
+			cout<<"Student "<<(&it-&temp[0])+1<<" Data:"<<'\n',
+			it.Display_Data(),cout<<'\n';
 	}
 
-	cout<<"\nAssignment of Student Obj to Vector through '[]' operator:"<<endl;
+	cout<<"\nAssignment of Student Obj to Vector through '[]' operator:"<<'\n';
 	unsigned short vec_size;
 	cout<<"\nEnter Size of Student Vector (DSA): ";
 	cin>>vec_size;
@@ -522,16 +523,16 @@ void test_case_8(){
 	Vec.reserve(vec_size);
 	Students obj;
 	for(unsigned short i=0;i<vec_size;++i){
-		cout<<"\nEnter Data for Student "<<i+1<<":"<<endl;
+		cout<<"\nEnter Data for Student "<<i+1<<":"<<'\n';
 		obj.Set_Data();
 		Vec.push_back(obj);//i.e. triggers copy assignment func for student
 	}
-	cout<<"\nRESULT:"<<endl;
+	cout<<"\nRESULT:"<<'\n';
 	for(const auto& it:Vec){
-		cout<<"Student "<<(&it-&Vec[0])+1<<" Data:"<<endl;
+		cout<<"Student "<<(&it-&Vec[0])+1<<" Data:"<<'\n';
 		it.Display_Data();
 		//Vec[i+1].Display_Data();//i.e. test-case for exception error
-		cout<<endl;
+		cout<<'\n';
 	}
 }
 #endif
