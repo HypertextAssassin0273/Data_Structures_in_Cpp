@@ -3,11 +3,6 @@
 #ifndef BST_TO_HEAP_CONVERTOR_GUARD
 #define BST_TO_HEAP_CONVERTOR_GUARD 1
 
-#ifndef _GLIBCXX_IOSTREAM 
-#include<iostream>
-using namespace std;
-#endif
-
 #if !BST_GUARD
 #include"BST.hpp"
 #endif
@@ -17,7 +12,7 @@ using namespace std;
 #endif
 
 template<typename T>
-class BST_to_Heap_Convertor:public BST<T>{
+class BST_to_Heap_Convertor:public BST<T>{//Note: not very efficient approach
 	typedef BST<T> base;
 	using base::BST;//i.e. inheriting ctors of base class (C++11)
 	
