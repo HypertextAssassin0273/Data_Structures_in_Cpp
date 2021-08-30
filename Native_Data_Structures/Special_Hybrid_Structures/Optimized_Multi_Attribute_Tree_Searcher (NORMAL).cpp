@@ -11,7 +11,8 @@ template<typename T>
 void print_type(){ std::cout<<__PRETTY_FUNCTION__<<'\n'; }//i.e. for debugging
 
 
-/* Extended AVL class for handling Pair of pointer types in multi_attribute_tree_searcher class */
+/* Extended AVL class for handling Pair of respective pointed types alongwith
+   their node-addresses of record in multi_attribute_tree_adapter class */
 template<typename T,typename list_node_type>
 class special_AVL:public AVL<Pair<T*,list_node_type*>>{
 	typedef Pair<T*,list_node_type*> pair_type;
