@@ -5,7 +5,6 @@
 
 #ifndef _GLIBCXX_IOSTREAM 
 #include<iostream>
-using namespace std;
 #endif
 
 #if !_GLIBCXX_FSTREAM
@@ -56,12 +55,12 @@ public:
 		}
 		return *this;
 	}
-	Vector(const string& str)noexcept://i.e. copy ctor for taking std::string type
+	Vector(const std::string& str)noexcept://i.e. copy ctor for taking std::string type
 		_size(0),_capacity(str.capacity()),data(new char[_capacity]){
 	 	while(_size<str.size())
 			data[_size]=str[_size++];
 	}
-	Vector& operator=(const string& str){//i.e. copy assignment for std::string type
+	Vector& operator=(const std::string& str){//i.e. copy assignment for std::string type
 		delete[] data;
 		data=new char[_capacity=str.capacity()];
 		while(_size<str.size())
@@ -74,13 +73,13 @@ public:
 			data[_size]=other.data[_size++];
 	}
 	Vector& operator=(const Vector& other)noexcept{//i.e. copy assignment
-		if(this==&other)
-			return *this;
-  		delete[] data;
-  		data=new char[_capacity=other._capacity];
- 		for(_size=0;_size<other.size();++_size)
-			data[_size]=other.data[_size];
-	 	return *this;
+		if(this!=&other){
+	  		delete[] data;
+	  		data=new char[_capacity=other._capacity];
+ 			for(_size=0;_size<other.size();++_size)
+				data[_size]=other.data[_size];
+	 	}
+		return *this;
  	}
 #if __cplusplus >= 201103L
  	Vector(Vector&& other)noexcept://i.e. move ctor
@@ -89,14 +88,14 @@ public:
   		other._size=other._capacity=0;
 	}
 	Vector& operator=(Vector&& other)noexcept{//i.e. move assignment
-  		if(this==&other)
-			return *this;
-  		delete[] data;
-  		data=other.data;
-  		_size=other._size;
-  		_capacity=other._capacity;
-  		other.data=nullptr;
-  		other._size=other._capacity=0;
+  		if(this!=&other){
+	  		delete[] data;
+	  		data=other.data;
+	  		_size=other._size;
+	  		_capacity=other._capacity;
+	  		other.data=nullptr;
+	  		other._size=other._capacity=0;
+		}
   		return *this;
 	}
 	Vector(const std::initializer_list<char>& list)noexcept://i.e. brace initializer-list ctor
@@ -113,14 +112,14 @@ public:
  	/*i.e. Accessors & Mutators */
 	char& operator[](__uint32 n)const{
 		if (n>=_size){
-			cout<<"\nError: Given Index is Out of Bound!\n";			
+			std::cout<<"\nError: Given Index is Out of Bound!\n";			
 	 		throw false;
 		}
 		return data[n];
 	}
 	char* operator+(__uint32 n)const{
 		if (n>=_size){
-			cout<<"\nError: Given Index is Out of Bound!\n";
+			std::cout<<"\nError: Given Index is Out of Bound!\n";
 	 		throw false;
 		}
 		return data+n;
@@ -264,24 +263,24 @@ public:
 #endif
 	
 	/* Overloaded 'cin/cout' Methods */
-	friend ostream& operator<<(ostream& out,const Vector& self){
+	friend std::ostream& operator<<(std::ostream& out,const Vector& self){
 		for(__uint32 i=0;i<self._size;++i)
 			out<<self.data[i];
 		return out;
 	}
-	friend istream& operator>>(istream& in,Vector& self){
+	friend std::istream& operator>>(std::istream& in,Vector& self){
 		self._size=0;
 		for(char reader;(reader=getchar())!=10;self.push_back(reader));
 		return in;
 	}
 	
 	/* Overloaded 'fin/fout' Methods */
-	friend ofstream& operator<<(ofstream& out,const Vector& self){
+	friend std::ofstream& operator<<(std::ofstream& out,const Vector& self){
 		for(__uint32 i=0;i<self._size;++i)
 			out<<self.data[i];
 		return out;
 	}
-	friend ifstream& operator>>(ifstream& in,Vector& self){
+	friend std::ifstream& operator>>(std::ifstream& in,Vector& self){
 		for(char reader='\0';(reader=in.get())!='\n';self.push_back(reader));
 		return in;
 	}
