@@ -1,9 +1,13 @@
+#ifndef _GLIBCXX_IOSTREAM 
+#include<iostream>
+#endif
+
 #if __cplusplus >= 201103L
 template<typename T>//i.e. T->type
 void Swap(T &xp,T &yp){
-    T temp=move(xp);
-    xp=move(yp);
-    yp=move(temp);
+    T temp=std::move(xp);
+    xp=std::move(yp);
+    yp=std::move(temp);
 	//i.e. here, move ctor gets invoked for pointed obj
 }
 #else
