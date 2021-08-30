@@ -1,5 +1,4 @@
 #include<iostream>
-using namespace std;
 
 #if __cplusplus < 201103L
 #define nullptr 0L
@@ -25,11 +24,11 @@ class xor_list{//i.e. xor doubly linked-list (memory efficient)
 			xnode(nullptr){}
 	#endif
 		
-		friend ostream& operator<<(ostream& out,const node& self){
+		friend std::ostream& operator<<(std::ostream& out,const node& self){
 			out<<self.data;
 			return out;
 		}
-		friend istream& operator>>(istream& in,node& self){
+		friend std::istream& operator>>(std::istream& in,node& self){
 			in>>self.data;
 			return in;
 		}
@@ -51,10 +50,10 @@ public:
 	xor_list(const __uint64& n,_T&&... new_data)noexcept:
 		head(nullptr),tail(nullptr),_size(0){//i.e. emplaced fill ctor
 			while(n>_size)
-				push_back(forward<_T>(new_data)...);
+				push_back(std::forward<_T>(new_data)...);
 	}
 #else
-	xor_list(const __uint64& n,const T& new_data)noexcept:
+	xor_list(const __uint64& n,const T& new_data)noexcept://i.e. fill ctor
 		head(nullptr),tail(nullptr),_size(0){
 			while(n>_size)
 				push_back(new_data);
@@ -71,15 +70,15 @@ public:
 		}
 	}
 	xor_list& operator=(const xor_list &other)noexcept{//i.e. copy assignment func.
-		if(this==&other)//i.e. self-assignment protection
-			return *this;
-		clear();//1) clear existing resources
-		node *curr=other.head,*next,*prev=nullptr;
-		while(curr){
-			push_back(curr->data);//2) copy other's data
-			next=XOR(prev,curr->xnode);
-			prev=curr;
-			curr=next;
+		if(this!=&other){//i.e. self-assignment protection
+			clear();//1) clear existing resources
+			node *curr=other.head,*next,*prev=nullptr;
+			while(curr){
+				push_back(curr->data);//2) copy other's data
+				next=XOR(prev,curr->xnode);
+				prev=curr;
+				curr=next;
+			}
 		}
 		return *this;
 	}
@@ -89,14 +88,14 @@ public:
 		other.head=nullptr; other.tail=nullptr; other._size=0;//2) set 'other' to null state
 	}
 	xor_list& operator=(xor_list&& other)noexcept{//i.e. move assignment
-		if(this==&other)
-			return *this;
-		clear();//1) clear existing resources
-		head=other.head; tail=other.tail; _size=other._size;//2) steal other's data
-		other.head=nullptr; other.tail=nullptr; other._size=0;//3) set 'other' to null state
+		if(this!=&other){
+			clear();//1) clear existing resources
+			head=other.head; tail=other.tail; _size=other._size;//2) steal other's data
+			other.head=nullptr; other.tail=nullptr; other._size=0;//3) set 'other' to null state
+		}
 		return *this;
 	}
-	xor_list(initializer_list<T> list)noexcept://i.e.initializer_list based ctor
+	xor_list(std::initializer_list<T> list)noexcept://i.e.initializer_list based ctor
 		head(nullptr),tail(nullptr),_size(0){
 		for(const auto& it:list)//i.e. traversing list through iterator
 			push_back(it);
@@ -106,7 +105,7 @@ public:
 	/* Accessors & Mutators */
 	T& operator[](__uint32 n){
 		if (n>=_size){//i.e. parameter is of unsigned type, hence condition 'n<0' is excluded
-			cout<<"\nError: Given Index is Out of Bound!\n";			
+			std::cout<<"\nError: Given Index is Out of Bound!\n";			
 	 		throw false;
 		}
 		if(n==_size-1)
@@ -137,7 +136,7 @@ public:
 #if __cplusplus >= 201103L
 	template<typename... _T>
 	void push_front(_T&&... new_data){//i.e. emplace_front, direct initialization is possible
-		push_front(new node(forward<_T>(new_data)...));
+		push_front(new node(std::forward<_T>(new_data)...));
 #else
 	void push_front(const T& new_data){//Complexity: O(1)
 		push_front(new node(new_data));
@@ -155,7 +154,7 @@ public:
 #if __cplusplus >= 201103L
 	template<typename... _T>
 	void push_back(_T&&... new_data){//i.e. emplace_back
-		push_back(new node(forward<_T>(new_data)...));
+		push_back(new node(std::forward<_T>(new_data)...));
 #else
 	void push_back(const T& new_data){//Complexity: O(1)
 		push_back(new node(new_data));
@@ -223,31 +222,31 @@ public:
 	}
 	void traverse_forward()const{
 		if(!head){
-			cout<<"List is empty!"<<endl;
+			std::cout<<"List is empty!"<<'\n';
 			return;
 		}
 		node *curr=head,*next,*prev=nullptr;
 		while(curr){
-			cout<<*curr<<" ";
+			std::cout<<*curr<<" ";
 			next=XOR(prev,curr->xnode);
 			prev=curr;
 			curr=next;
 		}
-		cout<<endl;
+		std::cout<<'\n';
 	}
 	void traverse_backward()const{
 		if(!tail){
-			cout<<"List is empty!"<<endl;
+			std::cout<<"List is empty!"<<'\n';
 			return;
 		}
 		node *curr=tail,*next=nullptr,*prev;
 		while(curr){
-			cout<<*curr<<" ";
+			std::cout<<*curr<<' ';
 			prev=XOR(next,curr->xnode);
 			next=curr;
 			curr=prev;
 		}
-		cout<<endl;
+		std::cout<<'\n';
 	}
 	void reverse(){//Complexity: O(1)
 		if(!head||!head->xnode)
