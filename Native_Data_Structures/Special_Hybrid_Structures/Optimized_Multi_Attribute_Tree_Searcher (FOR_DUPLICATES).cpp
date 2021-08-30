@@ -1,4 +1,4 @@
-							/* PERFORMS SIMULTANEOUS OPERATIONS & EFFICIENT FOR DUPLICATES (NOT COMPLETE) */
+							/* PERFORMS SIMULTANEOUS & EFFICIENT OPERATIONS FOR DUPLICATES (NOT COMPLETE) */
 #include"Pair.hpp"
 #include"Indexed_Struct.hpp"
 #include"../Node_Structures/AVL.hpp"
