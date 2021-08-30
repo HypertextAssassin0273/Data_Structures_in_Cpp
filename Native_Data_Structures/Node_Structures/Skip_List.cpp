@@ -99,7 +99,7 @@ void Skip_List<T>::insert(const T& key){
 			prev[lvl]=curr[lvl];
 			curr[lvl]=*(curr[lvl]->next+lvl);
 		}
-		if (curr[lvl]&&curr[lvl]->key==key)//don’t include duplicates
+		if (curr[lvl]&&curr[lvl]->key==key)//donâ€™t include duplicates
 			return;
 		if (lvl>0)//go one level down
 			if (prev[lvl]==0){//if not the lowest level use a link either from the root
@@ -119,7 +119,7 @@ void Skip_List<T>::insert(const T& key){
 		*(newNode->next+i)=curr[i];//newNode and reset to newNode
 		if (prev[i]==0)//either fields of the root
 			root[i]=newNode;
-		else//or next fields of newNode’s predecessors
+		else//or next fields of newNodeâ€™s predecessors
 			*(prev[i]->next+i)=newNode;
 	}
 }
