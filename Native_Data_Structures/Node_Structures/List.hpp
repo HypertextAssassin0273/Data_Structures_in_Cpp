@@ -1,16 +1,3 @@
-#ifndef _GLIBCXX_IOSTREAM 
-#include<iostream>
-using namespace std;
-#endif
-
-#ifndef LIST_GUARD
-#define LIST_GUARD 1
-
-#if __cplusplus < 201103L
-#define nullptr 0L
-#define noexcept
-#endif
-
 /* List as Doubly Linked-List (same as STL::list) */
 /*  Highlights:
 	1) Main emphasis on 'rule of five' (move semantics applicable with C++11 settings)
@@ -18,11 +5,26 @@ using namespace std;
 	3) Safe when accessing elements with accessors (Exception somewhat handled)
 	4) All neccessary STL List class 'modifiers' & 'iterators' are provided
 */
+#ifndef LIST_GUARD
+#define LIST_GUARD 1
+
+#ifndef _GLIBCXX_IOSTREAM 
+#include<iostream>
+#endif
+
+#if __cplusplus < 201103L
+#define nullptr 0L
+#define noexcept
+#else
+using std::forward;//i.e. using namespace std in order to reduce their name
+#endif
+using std::cout;
+
 template<typename T>
 class List{
     typedef unsigned long long __uint64;
 	typedef unsigned int __uint32;
-	
+public:
 	struct node{
 	    T data;
     	node *next,*prev;
@@ -37,16 +39,16 @@ class List{
 			next(nullptr),prev(nullptr){}
 	#endif
 		
-		friend ostream& operator<<(ostream& out,const node& self){
+		friend std::ostream& operator<<(std::ostream& out,const node& self){
 			out<<self.data;
 			return out;
 		}
-		friend istream& operator>>(istream& in,node& self){
+		friend std::istream& operator>>(std::istream& in,node& self){
 			in>>self.data;
 			return in;
 		}
 	};
-	
+protected:	
 	struct garbage_collector{//i.e. implementing stack by LIFO order
 		static const __uint32 max_capacity=128;
 		__uint32 _size;
@@ -108,7 +110,7 @@ class List{
 		}
 		~garbage_collector(){ clear(); }
 	};
-	
+
 	static const __uint32 max_capacity=~((__uint32)0);
 	static garbage_collector GC;
     node *head,*tail;
@@ -128,17 +130,11 @@ public:
 				push_back(forward<_T>(new_data)...);
 	}
 #else
-	List(const __uint64& n,const T& new_data)noexcept:head(nullptr),tail(nullptr),_size(0){
+	List(const __uint64& n,const T& new_data)noexcept://i.e. fill ctor
+		head(nullptr),tail(nullptr),_size(0){
 		if(n<=max_capacity)
 			while(n>_size)
 				push_back(new_data);
-	}
-#endif
-#if __cplusplus >= 201103L
-	//i.e.initializer_list based ctor
-	List(initializer_list<T> list)noexcept:head(nullptr),tail(nullptr),_size(0){
-		for(const auto& it:list)//i.e. traversing list through iterator
-        	push_back(it);
 	}
 #endif
 	List(const List &other)noexcept:head(nullptr),tail(nullptr),_size(0){//i.e. copy ctor
@@ -146,26 +142,31 @@ public:
            	push_back(it->data);//1) copy other's data
     }
     List& operator=(const List &other)noexcept{//i.e. copy assignment func.
-    	if(this==&other)//i.e. self-assignment protection
-    		return *this;
-		clear();//1) clear existing resources
-        for(node *it=other.head;it;it=it->next)
-           	push_back(it->data);//2) copy other's data
+    	if(this!=&other){//i.e. self-assignment protection
+			clear();//1) clear existing resources
+        	for(node *it=other.head;it;it=it->next)
+        	   	push_back(it->data);//2) copy other's data
+        }
         return *this;
     }
 #if __cplusplus >= 201103L
- 	List(List&& other)noexcept://i.e. move ctor (C++11 Construct)
+ 	List(List&& other)noexcept://i.e. move ctor
   		head(other.head),tail(other.tail),_size(other._size){//1) steal other's data
 		other.head=nullptr; other.tail=nullptr; other._size=0;//2) set 'other' to null state
 	}//Note: use "-fno-elide-constructors" flag to disable compiler optimization for move ctor (GCC Compilers)
  	
-	List& operator=(List&& other)noexcept{//i.e. move assignment func (C++11 Construct)
-  		if(this==&other)
-			return *this;
-		clear();//1) clear existing resources
-  		head=other.head; tail=other.tail; _size=other._size;//2) steal other's data
-  		other.head=nullptr; other.tail=nullptr; other._size=0;//3) set 'other' to null state
-  		return *this;
+	List& operator=(List&& other)noexcept{//i.e. move assignment func
+  		if(this!=&other){
+			clear();//1) clear existing resources
+  			head=other.head; tail=other.tail; _size=other._size;//2) steal other's data
+  			other.head=nullptr; other.tail=nullptr; other._size=0;//3) set 'other' to null state
+  		}	
+		return *this;
+	}
+	List(std::initializer_list<T> list)noexcept:
+		head(nullptr),tail(nullptr),_size(0){//i.e.initializer_list based ctor
+		for(const auto& it:list)//i.e. traversing list through iterator
+        	push_back(it);
 	}
 #endif
 
@@ -197,6 +198,8 @@ public:
 			return tail->data;
 		throw false;
 	}
+	node* front_node()const{ return head; }
+	node* back_node()const{ return tail; }
 	__uint32 size()const{ return _size; }
 	bool empty()const{ return head?false:true; }
 	
@@ -290,7 +293,7 @@ public:
     }
 #if __cplusplus >= 201103L
 	template<typename... _T>
-	void push_middle(_T&&... new_data){//i.e. emplace_middle
+	void push_middle(_T&&... new_data){//i.e. emplace_middle in O(logn) time
 		push_middle(GC.ptr?GC.pop(forward<_T>(new_data)...):new node(forward<_T>(new_data)...));
 #else
 	void push_middle(const T& new_data){
@@ -318,7 +321,7 @@ public:
 		}
 	    ++_size;
 	}
-	node* pop_middle(bool flag=false){
+	node* pop_middle(bool flag=false){//i.e. pop_middle in O(logn) time
 	    if(!head)
         	return nullptr;
         node* popped=nullptr;
@@ -350,7 +353,7 @@ public:
 	}
 #if __cplusplus >= 201103L
 	template<typename... _T>
-	void insert(__int64 index,_T&&... new_data){//i.e. emplace_randomly
+	void insert(__int64 index,_T&&... new_data){//i.e. emplace randomly in O(n) time
 		insert(index,GC.ptr?GC.pop(forward<_T>(new_data)...):new node(forward<_T>(new_data)...));
 #else
 	void insert(__int64 index,const T& new_data){
@@ -378,7 +381,7 @@ public:
 		temp->next->prev=temp;
 		++_size;
 	}
-	node* erase(const __uint64& index,bool flag=false){//i.e. removes node randomly
+	node* erase(const __uint64& index,bool flag=false){//i.e. removes node randomly in O(n) time
 		if(index<0||index>=_size)
 			return nullptr;
     	if(!index)
@@ -397,6 +400,20 @@ public:
     	temp2->prev=temp;
     	--_size;
     	return popped;
+	}
+	void erase(node *current){//i.e. removes node randomly in O(1) time if current node is given
+		if(!current)//Warning: no exception is possible to efficiently identify wrong node address
+			return;
+    	else if(current==head)
+    		pop_front();
+		else if(current==tail)
+			pop_back();
+		else{
+			current->prev->next=current->next;
+			current->next->prev=current->prev;
+			GC.push(current);
+			--_size;
+    	}
 	}
 #if __cplusplus >= 201103L
 	template<typename... _T>
@@ -568,31 +585,31 @@ public:
 	}
     void traverse_forward()const{
     	if(!head){
-    		cout<<"List is empty!"<<endl;
+    		cout<<"List is empty!"<<'\n';
         	return;
     	}
 	#if __cplusplus >= 201103L
 		for(const auto& it:*this)
-			cout<<it<<" ";
+			cout<<it<<' ';
 	#else
 		for(node *it=head;it;it=it->next)
-    		cout<<*it<<" ";
+    		cout<<*it<<' ';
 	#endif
-		cout<<endl;
+		cout<<'\n';
 	}
 	void traverse_backward()const{
     	if(!tail){
-       		cout<<"List is empty!"<<endl;
+       		cout<<"List is empty!"<<'\n';
         	return;
     	}
     #if __cplusplus >= 201103L
     	for(const auto& it:reverse_adapter(*this))
-			cout<<it<<" ";
+			cout<<it<<' ';
 	#else
 		for(node *it=tail;it;it=it->prev)
-    		cout<<*it<<" ";
+    		cout<<*it<<' ';
 	#endif
-		cout<<endl;
+		cout<<'\n';
 	}
 	void clear(){
 		if(head){
@@ -670,13 +687,13 @@ public:
 #endif
 	
 	/* Overloaded 'cin/cout' Methods */
-	friend ostream& operator<<(ostream& out,const List& list){//i.e. same as traverse_forward
-		for(node *it=list.head;it;it=it->next)
-    		out<<*it<<" ";
+	friend std::ostream& operator<<(std::ostream& out,const List& self){//i.e. same as traverse_forward
+		for(node *it=self.head;it;it=it->next)
+    		out<<*it<<' ';
 		return out;
 	}
-	friend istream& operator>>(istream& in,List& list){//Note: better for updating values
-		for(node *it=list.head;it;it=it->next)
+	friend std::istream& operator>>(std::istream& in,List& self){//Note: better for updating values
+		for(node *it=self.head;it;it=it->next)
     		in>>*it;
 		return in;
 	}
