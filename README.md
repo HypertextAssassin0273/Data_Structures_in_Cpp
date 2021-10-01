@@ -13,3 +13,10 @@
     <a href="https://www.boost.org/doc/libs/1_76_0/doc/html/heap.html">c) Heaps</a>
   <b/>
 </p1>
+<h2>C++11 Special Custom Containers</h2>
+<p1>
+  <b>
+    <a href="/Native_Data_Structures/Special_Structures/Indexed_Struct.hpp">a) Indexed Struct</a> &emsp;
+    <a href="/Native_Data_Structures/Special_Structures/Multi_Attribute_Tree_Adapter.hpp">b) Multi Attribute Tree Adapter</a>
+  <b/>
+</p1>
