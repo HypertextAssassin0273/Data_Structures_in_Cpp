@@ -10,7 +10,7 @@
     <a href="/Native_Data_Structures/Special_Structures/Indexed_Struct.hpp">a) Indexed Struct</a> &emsp;
     <a href="/Native_Data_Structures/Special_Structures/Multi_Attribute_Tree_Adapter.hpp">b) Multi Attribute Tree Adapter</a>
     <br><br>
-    <a href="ds_research_pointers_ppt.html">-DS Research Pointers (Presentation)</a>
+    <a href="https://hypertextassassin0273.github.io/Data_Structures_in_Cpp/">-DS Research Pointers (Presentation)</a>
   <b/>
 </p1>
 <h2>C++ Boost Library Reference Guide</h2>
