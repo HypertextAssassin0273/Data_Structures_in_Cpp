@@ -1,0 +1,102 @@
+1,123,"""Great"",""Work""",77.11,f,hamza
+1,123,Great Work!,77.11,f,hamza
+1,123,Great Work!,77.11,f,bibi
+1,123,Great Work!,77.11,f,bibi
+0,404,OXO,111.111,f,hamza
+0,404,OXO,111.111,C,shariq
+1,404,OXO,555.555,f,zaidan
+0,404,OXO,111.111,f,hamza
+0,404,OXO,111.111,C,shariq
+1,404,OXO,555.555,f,zaidan
+0,403,cOXO,555.555,F,haris
+0,403,cOXO,555.555,F,haris
+0,403,cOXO,555.555,F,colt
+0,403,cOXO,555.555,F,haris
+1,393,copied,555.555,f,shahzaib
+1,909,copied,555.555,f,shahzaib
+1,909,copied,555.555,f,shahzaib
+0,191,hello,919.19,d,subhan
+1,919,hello,444.444,z,asad
+0,191,hello,919.19,d,subhan
+1,919,hello,444.444,z,asad
+0,191,hello,919.19,d,subhan
+1,919,hello,444.444,z,asad
+0,191,hello,919.19,d,subhan
+1,919,hello,444.444,z,asad
+0,191,hello,919.19,d,subhan
+1,919,hello,444.444,z,asad
+0,404,left,345.1,q,shahzaib
+0,404,left,345.1,q,shahzaib
+0,404,left,345.1,q,shahzaib
+0,404,left,345.1,q,shahzaib
+1,919,noice,444.444,c,ali
+1,919,noice,444.444,c,ali
+1,919,noice,444.444,c,piper
+1,919,noice,444.444,c,ali
+1,919,noice,444.444,c,ali
+0,332,right,345.1,e,taha
+0,332,right,345.1,e,P.A.M
+0,332,right,345.1,e,taha
+0,332,right,345.1,e,taha
+1,321,stranded,0.1,f,sufiyan
+1,321,stranded,0.1,f,sufiyan
+1,321,"stranded, left-alone",0.1,f,sufiyan
+1,123,axa vv,23.3,Y,rahat
+1,919,noice,43.33,k,ali
+1,919,h1,23.5,R,fateh
+0,191,h1,2112.2,Y,subhan
+0,403,stranded,23.5,Z,ali
+0,332,right,345.1,e,dawood
+0,404,h1,345.1,q,shahzaib
+1,444,stoif,444.444,k,"""new"" friend"
+1,123,Great Work!,77.11,f,hamza
+1,123,Great Work!,77.11,f,bibi
+1,123,Great Work!,77.11,f,bibi
+1,123,"""Great"",""Work""",77.11,f,hamza
+0,191,hello,919.19,d,subhan
+0,191,hello,919.19,d,subhan
+0,191,hello,919.19,d,subhan
+0,191,hello,919.19,d,subhan
+0,191,hello,919.19,d,subhan
+1,321,stranded,0.1,f,sufiyan
+1,321,stranded,0.1,f,sufiyan
+1,321,"stranded, left-alone",0.1,f,sufiyan
+0,332,right,345.1,e,taha
+0,332,right,345.1,e,P.A.M
+0,332,right,345.1,e,taha
+0,332,right,345.1,e,taha
+1,393,copied,555.555,f,shahzaib
+0,403,cOXO,555.555,F,haris
+0,403,cOXO,555.555,F,haris
+0,403,cOXO,555.555,F,colt
+0,403,cOXO,555.555,F,haris
+0,404,left,345.1,q,shahzaib
+0,404,OXO,111.111,f,hamza
+0,404,OXO,111.111,C,shariq
+1,404,OXO,555.555,f,zaidan
+0,404,left,345.1,q,shahzaib
+0,404,left,345.1,q,shahzaib
+0,404,OXO,111.111,f,hamza
+0,404,OXO,111.111,C,shariq
+1,404,OXO,555.555,f,zaidan
+0,404,left,345.1,q,shahzaib
+1,909,copied,555.555,f,shahzaib
+1,909,copied,555.555,f,shahzaib
+1,919,hello,444.444,z,asad
+1,919,noice,444.444,c,ali
+1,919,hello,444.444,z,asad
+1,919,noice,444.444,c,ali
+1,919,hello,444.444,z,asad
+1,919,noice,444.444,c,piper
+1,919,hello,444.444,z,asad
+1,919,noice,444.444,c,ali
+1,919,hello,444.444,z,asad
+1,919,noice,444.444,c,ali
+1,123,axa vv,23.3,Y,rahat
+1,919,noice,43.33,k,ali
+1,919,h1,23.5,R,fateh
+0,191,h1,2112.2,Y,subhan
+0,403,stranded,23.5,Z,ali
+0,332,right,345.1,e,dawood
+0,404,h1,345.1,q,shahzaib
+1,444,stoif,444.444,k,"""new"" friend"
