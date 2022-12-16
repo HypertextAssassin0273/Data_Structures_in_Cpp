@@ -1,5 +1,0 @@
-Answer:
-
-The clerk should use "Selection Sort". 
-As the name suggests, it will give exactly the same amount of crates needed,
-then only at most 'n' exchanges will be done for 'n' goods.
