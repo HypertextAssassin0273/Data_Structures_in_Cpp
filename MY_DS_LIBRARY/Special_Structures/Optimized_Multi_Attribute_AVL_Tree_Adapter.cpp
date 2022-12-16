@@ -58,7 +58,7 @@ tree_adapter_type get_MAATA_O_obj_method_2(){
 }
 
 tree_adapter_type get_MAATA_O_obj_method_3(){
-	return tree_adapter_type("df_2_sorted.txt");//using input_file_stream ctor
+	return tree_adapter_type("df_2_sorted.txt", false, 128);//using input_file_stream ctor
 	//Note: pass 'true' in 2nd parameter if file is .csv
 }
 
