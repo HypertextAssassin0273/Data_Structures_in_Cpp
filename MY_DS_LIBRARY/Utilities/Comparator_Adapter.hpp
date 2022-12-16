@@ -49,7 +49,7 @@ auto Make_CA(const T& key, comparator_t<T> comp=equal)//makes comparator_adapter
 	return comparator_adapter<T, comparator_t>(key, comp);
 }
 template<typename T>
-auto Make_CA(const T& key, const T& key2, comparator_t2<T> comp=equal)//overload for range based comparators
+auto Make_CA(const T& key, const T& key2, comparator_t2<T> comp=is_in_range)//overload for range based comparators
 	->comparator_adapter<T, comparator_t2>{
 	return comparator_adapter<T, comparator_t2>(key, key2, comp);
 }
