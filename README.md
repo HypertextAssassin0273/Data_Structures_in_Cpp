@@ -9,7 +9,7 @@
 <p1>
   <b>
     <a href="/MY_DS_LIBRARY/Special_Structures/Indexed_Struct.hpp">a) Indexed Struct</a> &emsp;
-    <a href="/MY_DS_LIBRARY/Special_Structures/Multi_Attribute_AVL_Tree_Adapter.hpp">b) Multi Attribute Tree Adapter</a>
+    <a href="/MY_DS_LIBRARY/Special_Structures/Multi_Attribute_AVL_Tree_Adapter.hpp">b) Multi Attribute AVL Tree Adapter</a>
     <br><br>
     <a href="https://hypertextassassin0273.github.io/Data_Structures_in_Cpp/">-Some Important Research Points (Presentation)</a>
   <b/>
