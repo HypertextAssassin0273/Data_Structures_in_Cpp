@@ -1,0 +1,19 @@
+SUMMARIZED STATUS:-
+- Vector: revised recently on 10/11/22, no improvements needed as for now [future work: resize method's capacity growth needs to be similar to std::vector]
+- String: revised recently on 7/10/22, no improvements needed as for now
+- Segmented_Vector: revised recently on 10/13/22, insert_chunk needs to be completed (i.e. not ready for all cases)
+- F_Stack: revised recently on 10/9/22, no improvements needed as for now
+- HF_Stack: revised recently on 10/9/22, needs concept revision for more optimized Segmented_Vector [chances are: 90% dead-end approach]
+- F_Deque: revised recently on 10/12/22, no improvements needed as for now
+- Deque: revised recently on 10/12/22, no improvements needed as for now
+- Segmented_Deque: needs concept implementation from Segmented_Vector.hpp & form data concept from Deque.hpp & HF_Deque.hpp [future work]
+- Indexed_Struct: revised recently on 10/19/22, no improvements needed as for now
+- M.A.A.T.A: revised recently on 12/17/22, need deep copy {a.k.a. copy semantics} operations for more flexible data manipulation.
+- O.M.A.A.T.A: revised recently on 12/17/22, more indexing methods needed for range search queries with indexer {deque.hpp} [future work: replace it with segmented_deque.hpp]
+- Linked_Lists, Special_Structures need C++03 updates
+- Contiguous Structures have to have separate primitive/object type handling [using template specialization or SFINAE rule]
+
+
+TIP:-
+- To create a log file, open notepad and type .LOG on 1st line and then press ENTER to move on the next line. After that,
+  just save file with any descriptive name. The next time you'll open it, it will work as log file. TADA!!!
