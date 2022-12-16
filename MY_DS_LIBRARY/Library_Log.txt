@@ -17,3 +17,4 @@ SUMMARIZED STATUS:-
 TIP:-
 - To create a log file, open notepad and type .LOG on 1st line and then press ENTER to move on the next line. After that,
   just save file with any descriptive name. The next time you'll open it, it will work as log file. TADA!!!
+  
