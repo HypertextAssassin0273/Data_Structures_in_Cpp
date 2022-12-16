@@ -8,10 +8,11 @@ SUMMARIZED STATUS:-
 - Deque: revised recently on 10/12/22, no improvements needed as for now
 - Segmented_Deque: needs concept implementation from Segmented_Vector.hpp & form data concept from Deque.hpp & HF_Deque.hpp [future work]
 - Indexed_Struct: revised recently on 10/19/22, no improvements needed as for now
-- M.A.A.T.A: revised recently on 12/17/22, need deep copy {a.k.a. copy semantics} operations for more flexible data manipulation.
+- M.A.A.T.A: revised recently on 12/17/22, need deep copy {a.k.a. copy semantics} operations for more flexible data manipulation
 - O.M.A.A.T.A: revised recently on 12/17/22, more indexing methods needed for range search queries with indexer [future work: deque.hpp => segmented_deque.hpp]
-- Linked_Lists, Special_Structures need C++03 updates
-- Contiguous Structures have to have separate primitive/object type handling [using template specialization or SFINAE rule]
+- Contiguous_Structures: require separate primitive/object type handling (using template specialization or SFINAE rule) [future work]
+- Hashing: more material need to be added
+- Priority_Queues & Heaps: new folders along with material need to be added
 
 TIP:-
 - To create a log file, open notepad and type .LOG on 1st line and then press ENTER to move on the next line. After that,
