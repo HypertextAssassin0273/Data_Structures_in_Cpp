@@ -69,6 +69,8 @@ void basic_operations(tree_adapter_type& obj){
 	cout<<"\n-----\nSearch all 'f' after removing all 77.11 :-\n";
 	obj.remove({3}, 77.11);//remove any record by any attribute in O(logN+M*logN) time
 	obj.view_filtered_records(obj.search({4}, 'f'));//search record by any attribute in O(logN) time
+	cout<<"\n-----\nRange Search (i.e. all data must lie b/w 200 & 500 {int}):-\n";
+	obj.view_filtered_records(obj.search({4,1}, 'f', Make_CA(200, 500, is_in_range)));//range search query
 	
 //	cout<<"\n-----\nSearch by l-values {403, 555.555}:-\n";
 //	int i=403; double d=555.555;
