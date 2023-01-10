@@ -1,0 +1,33 @@
+- we'll work on only 3 base types: int, float, string
+
+- char doesn't need our model, since they are unique & just 255 in total, one can simply create 1d array with just fixed size of 27,
+  & then use hash {by subtracting character ascii from their respective range (e.g. for 'a-z', '65' is req.)} to place them as index.
+
+- int e.g. for placing values in hash table (no need for extra hash func):
+	225) 225%10 = 5 means 2D {base} array index is 5 & 225/10 = 25 {-1} means 1D {sub} array index is 24
+	83) 83%10 = 3 means 2D {base} array index is 3 & 83/10 = 8 {-1} means 1D {sub} array index is 7
+
+- float e.g. for placing values in hash table:
+	22.5) H=(22.5)*exp(log(2)*((size_t)log10(22.5)+1)*log2(10)) => H=225 {removes decimal point}, 
+	      H{=225}%10 = 5 means 2D {base} array index is 5 & H{=225}/10 = 25 {-1} means 1D {sub} array index is 24
+
+- string e.g. for placing values in hash table:
+	1) just add ascii's of each character in string & then use the sum as hash {as for now}
+	   (note: but this method fails to resolve collisions b/w the similar weight strings)
+	2) assign a unique int id to each string and use them as hash {with same int model}
+
+
+- 2 methods so far to construct model {behave similar to chaining-technique, but with different capacity dimension constraints}:
+	i) complete fixed size 2D array:
+		a) pre-reqs: max range known, no extreme outliers present, no need for reshaping/updating the model capacity
+		b) max capacity will be split in these dimensions: e.g. 100 => 10x10, 1000 => 10x100 or 100x10 (doesn't matter in this model)
+		c) both arrays are fixed size (a.k.a static)
+	ii) one dimension fixed & the other as dynamic:
+		a) base 1D {pointer} array as fixed size & 2D {sub} array as dynamic
+		   (e.g. as fixed size array of vectors)
+		b) base 1D {pointer} array as dynamic & 2D {sub} array as fixed size
+		   (e.g. as vector of fixed size arrays, a.k.a segmented_vector)
+		*) note: these methods will need 'load factor' logic, i.e. on becoming 30, 50 or 70% filled out of max capacity, 
+			   increase the capacity {in 2n series or etc} to avoid collisions for effective hashing
+		*) disadvantage: growth factor is O(N) in both case {as for now} since, increasing capacity will req. re-hashing
+     				     (as previous hash will fail)
