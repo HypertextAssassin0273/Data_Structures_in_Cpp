@@ -1,0 +1,38 @@
+If you want to become a truly legendary C++ programmer, you have to read the following books:
+
+1) The C++ Programming Language (4th edition - the one that covers C++11) - by Bjarne Stroustrup, the creator of C++.
+   This is an absolutely MUST-READ book. This covers the basics and essentials needed to be a competent beginner.
+   It must be read cover to cover (it's voluminous, but the effort spent in reading it would pay off big time).
+
+2) The C++ Standard Library: A Tutorial and Reference (2nd Edition, the one that covers C++11) - by Nicolai M. Josuttis.
+   This is a pretty comprehensive reference for the STL.
+
+3) Once you have a grasp of the language and the standard template library, it's time to move on to the Do's and Don'ts, 
+   and the best books in this category are the "Effective" series books from Scott Meyers:
+	
+	a) Effective C++: 55 Specific Ways to Improve Your Programs and Designs
+	
+	b) More Effective C++: 35 New Ways to Improve Your Programs and Designs
+	
+	c) Effective STL: 50 Specific Ways to Improve Your Use of the Standard Template Library
+	
+	d) Effective Modern C++: 42 Specific Ways to Improve Your Use of C++11 and C++14
+
+4) After the above books have been read, you would be ready to look at templates in details, and there is just one book
+   that covers everything: C++ Templates: The Complete Guide - by David Vandevoorde and Nicolai M. Josuttis. 
+   Unfortunately this book covers only C++98/03 but the wealth of information in it is still invaluable.
+   I hear that a second edition covering C++11/14 is in the works and shall be available soon.
+
+5) Once you finish reading the above, you would be all set to master design principles. The two books to read for design are:
+	
+	a) Design Patterns: Elements of Reusable Object-Oriented Software - by Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides.
+	   this one is a classic, and almost a mandatory reading for any OO-design work.
+	
+	b) Modern C++ Design: Generic Programming and Design Patterns Applied - by Andrei Alexandrescu.
+	   This book doesn't cover C++11, but is still pretty good.
+
+6) After reading all the above, you can look at the internals of C++: Inside the C++ Object Model - by Stanley B. Lippman.
+   This book talks about how C++ objects are laid out in memory and things like virtual tables.
+
+A thorough reading of the above books will make you a truly world-class C++ programmer.
+It's a long road, but it's a journey worth undertaking.
