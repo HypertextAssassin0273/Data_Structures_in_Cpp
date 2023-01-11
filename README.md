@@ -3,7 +3,7 @@
 #### [-Understanding C++ Standard-Template-Library (STL) (by BoQian)](https://youtube.com/playlist?list=PLA0_W94naaYmk0uFVkUnXv0SiMIP5Jjlb)
 #### [-Data Structures & Algorithms Cheat Sheet in C++](https://github.com/gibsjose/cpp-cheat-sheet/blob/master/Data%20Structures%20and%20Algorithms.md)
 #### [-Learn Complete Data-Structures & Algorithms (by Programiz)](https://www.programiz.com/dsa)
-#### [-List of Some Advance Data-Structures (brief introduction)](https://www.geeksforgeeks.org/advanced-data-structures/)
+#### [-List of Some Advance Data-Structures (Brief Introduction)](https://www.geeksforgeeks.org/advanced-data-structures/)
 #### [-More DS & Algo Resource Links](https://github.com/Developer-Y/cs-video-courses#data-structures-and-algorithms)
 
 <h2>C++11 Special Custom Containers</h2>
@@ -11,8 +11,7 @@
   <b>
     <a href="/MY_DS_LIBRARY/Special_Structures/Indexed_Struct.hpp">a) Indexed Struct</a> &emsp;
     <a href="/MY_DS_LIBRARY/Special_Structures/Multi_Attribute_AVL_Tree_Adapter.hpp">b) Multi Attribute AVL Tree Adapter</a>
-    <br><br>
-    <a href="https://hypertextassassin0273.github.io/Data_Structures_in_Cpp/MAATA/">-Project Website (for detailed info)</a>
+    <a href="MY_DS_LIBRARY/Special_Structures/Documentation_Files/Project%20Report.pdf">(Project Report)</a>
   <b/>
 </p1>
 <h2>C++ Boost Library Reference Guide</h2>
