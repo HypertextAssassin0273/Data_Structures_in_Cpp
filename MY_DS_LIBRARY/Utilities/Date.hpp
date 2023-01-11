@@ -16,13 +16,19 @@ public:
 		day(day), month(month), year(year){}
 	
 	/* Comparators (comparison operators) */
-	bool operator==(const __D& other)const{ return day==other.day&&month==other.month&&year==other.year; }
+	bool operator==(const __D& other)const{
+		return day==other.day&&month==other.month&&year==other.year;
+	}
 	bool operator!=(const __D& other)const{ return !(*this==other); }
 	
-	bool operator>(const __D& other)const{ return day>other.day&&month>other.month&&year>other.year; }
+	bool operator>(const __D& other)const{
+		return year==other.year?month==other.month?day>other.day:month>other.month:year>other.year;
+	}
 	bool operator<=(const __D& other)const{ return !(*this>other); }
 	
-	bool operator<(const __D& other)const{ return day<other.day&&month<other.month&&year<other.year; }
+	bool operator<(const __D& other)const{
+		return year==other.year?month==other.month?day<other.day:month<other.month:year<other.year;
+	}
 	bool operator>=(const __D& other)const{ return !(*this<other); }
 	
 	/* Overloaded 'cout & cin' Methods */
