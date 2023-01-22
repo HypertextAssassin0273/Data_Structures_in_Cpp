@@ -11,7 +11,7 @@
   <b>
     <a href="/MY_DS_LIBRARY/Special_Structures/Indexed_Struct.hpp">a) Indexed Struct</a> &emsp;
     <a href="/MY_DS_LIBRARY/Special_Structures/Multi_Attribute_AVL_Tree_Adapter.hpp">b) Multi Attribute AVL Tree Adapter</a>
-    <a href="/MY_DS_LIBRARY/Special_Structures/Documentation_Files/Project%20Report.pdf">(Project Report)</a>
+    <a href="https://hypertextassassin0273.github.io/assets/img/projects/DS-R-Project_Report.pdf">(Project Report)</a>
   <b/>
 </p1>
 <h2>C++ Boost Library Reference Guide</h2>
