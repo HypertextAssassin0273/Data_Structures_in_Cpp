@@ -3,7 +3,7 @@ SUMMARIZED STATUS:-
 - String: revised recently on 7/10/22, no improvements needed as for now
 - Segmented_Vector: revised recently on 10/13/22, insert_chunk needs to be completed (i.e. not ready for all cases)
 - F_Stack: revised recently on 10/9/22, no improvements needed as for now
-- HF_Stack: revised recently on 10/9/22, needs concept revision for more optimized Segmented_Vector [chances are: 90% dead-end approach]
+- HF_Stack: revised recently on 10/9/22, needs concept revision for more optimized Segmented_Vector [might be dead-end approach]
 - F_Deque: revised recently on 10/12/22, no improvements needed as for now
 - Deque: revised recently on 10/12/22, no improvements needed as for now
 - Segmented_Deque: needs base concept implementation from Segmented_Vector.hpp & form data concept from Deque.hpp & HF_Deque.hpp [future work]
@@ -14,6 +14,6 @@ SUMMARIZED STATUS:-
 - Hashing: more material need to be added
 - Priority_Queues & Heaps: new folders along with material need to be added
 
-TIP:-
+TIP (tested on Windows 10/11):-
 - To create a log file, open notepad and type .LOG on 1st line and then press ENTER to move on the next line. After that,
   just save file with any descriptive name. The next time you'll open it, it will work as log file. TADA!!!
