@@ -157,7 +157,7 @@ private:
 template<typename... types>
 typename indexed_struct<types...>::offset_type
 indexed_struct<types...>::offset_adder=0;
-//Note: it has to be declared it inside the class as static. otherwise, it won't reset for different types.
+//Note: it has to be declared inside the class as static. otherwise, it won't reset for different types.
 
 /* static array initialization: */
 template<typename... types>
