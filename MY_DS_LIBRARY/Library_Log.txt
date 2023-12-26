@@ -13,6 +13,7 @@ SUMMARIZED STATUS:-
 - Contiguous_Structures: require separate primitive/object type handling (using template specialization or SFINAE rule) [future work]
 - Hashing: more material need to be added
 - Priority_Queues & Heaps: new folders along with material need to be added
+- Graphs: new folder along with material needs to be added
 
 TIP (tested on Windows 10/11):-
 - To create a log file, open notepad and type .LOG on 1st line and then press ENTER to move on the next line. After that,
