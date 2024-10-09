@@ -11,6 +11,7 @@
 /* Type_Parse_Traits template struct for defining its' specialized templates: */
 template<typename T>
 struct type_parse_traits;
+
 #define REGISTER_PARSE_TYPE(type) \
 template<>struct type_parse_traits<type>{ static const char* name; }; \
 const char* type_parse_traits<type>::name = #type //'#' converts 'type' into string & initializes 'name'
